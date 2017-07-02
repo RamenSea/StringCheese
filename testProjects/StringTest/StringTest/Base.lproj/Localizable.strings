@@ -1,0 +1,12 @@
+// Last generated at: 2017-04-19 21:27:22.395626885 -0700 PDT
+"6"="here is a long test. here is a long test. here is a long test. here is a long test. here is a long test. here is a long test. here is a long test. here is a long test. here is a long test. here is a long test. ";
+"8"="im missing in other";
+"11"="heres is an arg %1$@ test%1$@";
+"0"="here\' is another \" test";
+"1"="heres is an arg %1$@ test";
+"2"="here is a %1$@ named arg test  %1$@";
+"9"="here is a named arg test %1$@";
+"10"="here is a test";
+"3"="here is a %1$@ named arg test  %1$@";
+"4"="";
+"7"="%1$@ test%1$@ \" %1$@";
