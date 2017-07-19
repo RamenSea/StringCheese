@@ -84,7 +84,7 @@ func getStringValueForLanguage(languageId string, config *StringValueConfig) *St
 	if languageId == LANGUAGE_ID_NONE {
 		valueFolderName = "values/"
 	}
-	fullStringPath := config.pathToAndroidRes + valueFolderName + config.nameOfXMLStringFile
+	fullStringPath := config.pathToAndroidRes + valueFolderName + config.nameOfXMLStringFile + ".xml"
 	fileReader, err := os.Open(fullStringPath)
 	if err != nil {
 		fmt.Println("Error loading xml string at: " + fullStringPath)

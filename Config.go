@@ -53,7 +53,7 @@ type StringValueConfig struct {
 	OPTIONAL
 	Name of XML strings file in your Android project.
 
-	DEFAULT: "strings.xml"
+	DEFAULT: "strings"
 	 */
 	nameOfXMLStringFile string
 
@@ -147,17 +147,38 @@ func (config * StringValueConfig) GetAllValueFoldersLanguageIds() ([]string, err
 const NO_VALUE_FROM_FLAG  = "NONE"
 const DEFAULT_LANGUAGE_ID = LANGUAGE_ID_NONE
 const DEFAULT_DOT_STRING_FILE_NAME = "Localizable"
+const DEFAULT_XML_STRING_FILE_NAME = "strings"
+const DEFAULT_CREATE_SWIFT_KEY = true
+/*
+	Processes CLI arguments
+ */
 func parseAndGetConfig() (*StringValueConfig, error) {
 	pathToAndroidRes := flag.String("a", NO_VALUE_FROM_FLAG, "REQUIRED\n" +
 		"Path to your Android res folder.")
+
 	pathToIOSAPP := flag.String("i", NO_VALUE_FROM_FLAG, "REQUIRED\n" +
 		"Path to your iOS project.")
+
 	defaultLang := flag.String("lang", NO_VALUE_FROM_FLAG, "OPTIONAL\n" +
-		"Language to use as your default set of strings.")
+		"Language to use as your default set of strings.\n" +
+		"Default: base") //todo find out what defaults
+
+	nameOfDotStringFile := flag.String("i_strings", NO_VALUE_FROM_FLAG, "OPTIONAL\n" +
+		"Name of the .string file for iOS\n" +
+		"Default: Localizable")
+
+	nameOfXMLStringFile := flag.String("xml", NO_VALUE_FROM_FLAG, "OPTIONAL\n" +
+		"Name of the .xml string files in your android project\n" +
+		"Default: strings")
+
+	shouldCreateSwiftKey := flag.Bool("swift", true, "OPTIONAL\n" +
+		"Creates the Swift \n" +
+		"Default: true")
 
 	flag.Parse()
 
-	languageId := DEFAULT_LANGUAGE_ID
+
+
 	if *pathToAndroidRes == NO_VALUE_FROM_FLAG {
 		return nil, errors.New("Did not include path to your Android res folder.\n" +
 			"Ex: ./StringValue -a /Users/me/workspace/androidApp/app/src/main/res")
@@ -166,25 +187,29 @@ func parseAndGetConfig() (*StringValueConfig, error) {
 		return nil, errors.New("Did not include path to your iOS project folder.\n" +
 			"Ex: ./StringValue -a /Users/me/workspace/iOSAPP/iOSAPP")
 	}
+
 	if *defaultLang == NO_VALUE_FROM_FLAG {
-		return nil, errors.New("Did not include path to your iOS project folder.\n" +
-			"Ex: ./StringValue -a /Users/me/workspace/iOSAPP/iOSAPP")
-	} else {
-		languageId = *defaultLang
+		defaultLang = &DEFAULT_LANGUAGE_ID
+	}
+	if *nameOfDotStringFile == NO_VALUE_FROM_FLAG {
+		nameOfDotStringFile = &DEFAULT_DOT_STRING_FILE_NAME
+	}
+	if *nameOfXMLStringFile == NO_VALUE_FROM_FLAG {
+		nameOfXMLStringFile = &DEFAULT_XML_STRING_FILE_NAME
 	}
 
 	timeStamp := "// Last generated at: " + time.Now().String() + "\n"
 	config := StringValueConfig{timeStampString: timeStamp,
-		rootLanguageId:languageId,
+		rootLanguageId: *defaultLang,
 		pathToAndroidRes: *pathToAndroidRes,
 		pathToIOSProject: *pathToIOSAPP,
 		pathToSwiftKey: *pathToIOSAPP,
-		nameOfDotStringFile: "Localizable",
-		nameOfXMLStringFile: "strings.xml",
-		shouldCreateArgumentsInSwiftAPI: true,
-		swiftClassName: "StringKeys",
-		useStaticForSwiftAPI: true,
+		nameOfDotStringFile: *nameOfDotStringFile,
+		nameOfXMLStringFile: *nameOfXMLStringFile,
 		shouldCreateSwiftKey: true,
+		swiftClassName: "StringKeys",
+		useStaticForSwiftAPI: false,
+		shouldCreateArgumentsInSwiftAPI: true,
 		logMissingStrings: true,
 		reduceKeys: true, //todo set false
 	}

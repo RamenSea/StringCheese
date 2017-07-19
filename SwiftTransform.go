@@ -34,12 +34,12 @@ func writeSwiftKeyFile(value *StringKeys, config *StringValueConfig) {
 		"class " + config.swiftClassName + " { \n")
 
 	if config.useStaticForSwiftAPI {
-		file.WriteString("	private static var _shared: StringKeys? = nil\n" +
-			"	static var shared: StringKeys {\n" +
+		file.WriteString("	private static var _shared: " + config.swiftClassName + "? = nil\n" +
+			"	static var shared: " + config.swiftClassName + " {\n" +
 			"		if let s = _shared {\n" +
 			"			return s\n" +
 			"		}\n" +
-			"		let s = StringKeys()\n" +
+			"		let s = " + config.swiftClassName + "()\n" +
 			"		_shared = s\n" +
 			"		return s\n" +
 			"	}\n\n")

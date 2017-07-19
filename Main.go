@@ -26,7 +26,7 @@ func main() {
 
 	if err == nil {
 		fmt.Println("Success")
-		fmt.Println("Make sure to add all generated files to your project")
+		fmt.Println("Make sure to add all generated files to your XCode project")
 	} else {
 		fmt.Println(err)
 	}
