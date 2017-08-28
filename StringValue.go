@@ -80,9 +80,9 @@ func CreateStringValue(value XMLStringValue, config *StringValueConfig) *StringV
 	return &s
 }
 func getStringValueForLanguage(languageId string, config *StringValueConfig) *StringKeys {
-	valueFolderName := "values-" + languageId + "/"
+	valueFolderName := "/values-" + languageId + "/"
 	if languageId == LANGUAGE_ID_NONE {
-		valueFolderName = "values/"
+		valueFolderName = "/values/"
 	}
 	fullStringPath := config.pathToAndroidRes + valueFolderName + config.nameOfXMLStringFile + ".xml"
 	fileReader, err := os.Open(fullStringPath)

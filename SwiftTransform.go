@@ -20,7 +20,7 @@ func SwiftTransformKeyToSwiftVarName(key string) string {
 	Writes the Swift StringKey api for a given StringKey struct
  */
 func writeSwiftKeyFile(value *StringKeys, config *StringValueConfig) {
-	pathToSwiftKey := config.pathToSwiftKey + config.swiftClassName + ".swift"
+	pathToSwiftKey := config.pathToSwiftKey + "/" + config.swiftClassName + ".swift"
 	_ = os.Remove(pathToSwiftKey) //skipped err check
 	file, err := os.Create(pathToSwiftKey)
 	if err != nil {
@@ -54,9 +54,8 @@ func writeSwiftKeyFile(value *StringKeys, config *StringValueConfig) {
 
 	for _, value := range valueMap {
 		if value.translatable == false {
-			file.WriteString("	var " + SwiftTransformKeyToSwiftVarName(value.originalKey) +": String {\n" +
-				"		return \"" + value.value + "\"\n" +
-				"	}\n")
+			file.WriteString("	let " + SwiftTransformKeyToSwiftVarName(value.originalKey) +": String = " +
+				"\"" + value.value + "\"\n")
 		} else if writeArgSwiftFuncs && value.numberOfArguments > 0 {
 			//I added the raw string just incase
 			file.WriteString("	var raw_" + SwiftTransformKeyToSwiftVarName(value.originalKey) +": String {\n" +

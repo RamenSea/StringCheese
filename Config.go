@@ -118,9 +118,9 @@ type StringValueConfig struct {
 //Gets the path to the where the language's .strings file should be located
 func (config *StringValueConfig) DotStringFileWithLanguageId(languageId string) string {
 	if languageId == LANGUAGE_ID_NONE {
-		return config.pathToIOSProject + "Base.lproj/" + config.nameOfDotStringFile + ".strings"
+		return config.pathToIOSProject + "/Base.lproj/" + config.nameOfDotStringFile + ".strings"
 	}
-	return config.pathToIOSProject + strings.Title(languageId) + ".lproj/" + config.nameOfDotStringFile + ".strings"
+	return config.pathToIOSProject + "/" + strings.Title(languageId) + ".lproj/" + config.nameOfDotStringFile + ".strings"
 }
 //gets all the language IDs from an Android projects res folder
 func (config * StringValueConfig) GetAllValueFoldersLanguageIds() ([]string, error) {
@@ -149,6 +149,7 @@ const DEFAULT_LANGUAGE_ID = LANGUAGE_ID_NONE
 const DEFAULT_DOT_STRING_FILE_NAME = "Localizable"
 const DEFAULT_XML_STRING_FILE_NAME = "strings"
 const DEFAULT_CREATE_SWIFT_KEY = true
+const DEFAULT_SWIFT_KEY_NAME = "StringCheese"
 /*
 	Processes CLI arguments
  */
@@ -171,7 +172,7 @@ func parseAndGetConfig() (*StringValueConfig, error) {
 		"Name of the .xml string files in your android project\n" +
 		"Default: strings")
 
-	shouldCreateSwiftKey := flag.Bool("swift", true, "OPTIONAL\n" +
+	shouldCreateSwiftKey := flag.Bool("swift", DEFAULT_CREATE_SWIFT_KEY, "OPTIONAL\n" +
 		"Creates the Swift \n" +
 		"Default: true")
 
@@ -189,13 +190,13 @@ func parseAndGetConfig() (*StringValueConfig, error) {
 	}
 
 	if *defaultLang == NO_VALUE_FROM_FLAG {
-		defaultLang = &DEFAULT_LANGUAGE_ID
+		*defaultLang = DEFAULT_LANGUAGE_ID
 	}
 	if *nameOfDotStringFile == NO_VALUE_FROM_FLAG {
-		nameOfDotStringFile = &DEFAULT_DOT_STRING_FILE_NAME
+		*nameOfDotStringFile = DEFAULT_DOT_STRING_FILE_NAME
 	}
 	if *nameOfXMLStringFile == NO_VALUE_FROM_FLAG {
-		nameOfXMLStringFile = &DEFAULT_XML_STRING_FILE_NAME
+		*nameOfXMLStringFile = DEFAULT_XML_STRING_FILE_NAME
 	}
 
 	timeStamp := "// Last generated at: " + time.Now().String() + "\n"
@@ -206,8 +207,8 @@ func parseAndGetConfig() (*StringValueConfig, error) {
 		pathToSwiftKey: *pathToIOSAPP,
 		nameOfDotStringFile: *nameOfDotStringFile,
 		nameOfXMLStringFile: *nameOfXMLStringFile,
-		shouldCreateSwiftKey: true,
-		swiftClassName: "StringKeys",
+		shouldCreateSwiftKey: *shouldCreateSwiftKey,
+		swiftClassName: DEFAULT_SWIFT_KEY_NAME,
 		useStaticForSwiftAPI: false,
 		shouldCreateArgumentsInSwiftAPI: true,
 		logMissingStrings: true,
