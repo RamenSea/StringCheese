@@ -25,6 +25,11 @@ type StringValueConfig struct {
 	pathToAndroidRes string
 
 	/*
+	Set true if pathToIOSProject is set
+
+	 */
+	translatingToIOS bool
+	/*
 	REQUIRED
 	Path to the base of your iOS project
 
@@ -41,6 +46,15 @@ type StringValueConfig struct {
 	DEFAULT: "NONE" -this serves to use whatever is the base language in the project
 	 */
 	rootLanguageId string
+	/*
+	OPTIONAL
+	works as the language ID if no default language is set
+
+	-langReal STRING
+
+	DEFAULT: "en"
+	 */
+	idOfNoLanguage string
 	/*
 	OPTIONAL
 	Path to where the Swift API key file will be generated.
@@ -113,6 +127,27 @@ type StringValueConfig struct {
 	DEFAULT: false
 	 */
 	reduceKeys bool
+
+	/*
+	Set true if pathToDartFile is set
+
+	 */
+	translatingToDart bool
+
+	/*
+	REQUIRED for Dart
+	Path to output dart file
+
+	DEFAULT: ""
+	 */
+	pathToDartFile string
+	/*
+	REQUIRED for Dart
+	Text put at the top of the Dart file
+
+	Example: "part of core.strings;"
+	 */
+	dartHeader string
 }
 
 //Gets the path to the where the language's .strings file should be located
@@ -157,7 +192,7 @@ func parseAndGetConfig() (*StringValueConfig, error) {
 	pathToAndroidRes := flag.String("a", NO_VALUE_FROM_FLAG, "REQUIRED\n" +
 		"Path to your Android res folder.")
 
-	pathToIOSAPP := flag.String("i", NO_VALUE_FROM_FLAG, "REQUIRED\n" +
+	pathToIOSAPP := flag.String("i", NO_VALUE_FROM_FLAG, "REQUIRED if translating to iOS\n" +
 		"Path to your iOS project.")
 
 	defaultLang := flag.String("lang", NO_VALUE_FROM_FLAG, "OPTIONAL\n" +
@@ -176,6 +211,12 @@ func parseAndGetConfig() (*StringValueConfig, error) {
 		"Creates the Swift \n" +
 		"Default: true")
 
+	pathToDartApp := flag.String("dart", NO_VALUE_FROM_FLAG, "REQUIRED if translating to Dart\n" +
+		"Path to your Dart project.")
+
+	dartHeader := flag.String("dart_header", NO_VALUE_FROM_FLAG, "REQUIRED if translating to Dart\n" +
+		"Text put at the top of the translated Dart file")
+
 	flag.Parse()
 
 
@@ -184,8 +225,8 @@ func parseAndGetConfig() (*StringValueConfig, error) {
 		return nil, errors.New("Did not include path to your Android res folder.\n" +
 			"Ex: ./StringValue -a /Users/me/workspace/androidApp/app/src/main/res")
 	}
-	if *pathToIOSAPP == NO_VALUE_FROM_FLAG {
-		return nil, errors.New("Did not include path to your iOS project folder.\n" +
+	if *pathToIOSAPP == NO_VALUE_FROM_FLAG && (*pathToDartApp == NO_VALUE_FROM_FLAG && *dartHeader == NO_VALUE_FROM_FLAG){
+		return nil, errors.New("Did not include path to an iOS or Dart project folder.\n" +
 			"Ex: ./StringValue -a /Users/me/workspace/iOSAPP/iOSAPP")
 	}
 
@@ -202,8 +243,10 @@ func parseAndGetConfig() (*StringValueConfig, error) {
 	timeStamp := "// Last generated at: " + time.Now().String() + "\n"
 	config := StringValueConfig{timeStampString: timeStamp,
 		rootLanguageId: *defaultLang,
+		idOfNoLanguage: LANGUAGE_ID_NONE_NAME,
 		pathToAndroidRes: *pathToAndroidRes,
 		pathToIOSProject: *pathToIOSAPP,
+		translatingToIOS: *pathToIOSAPP != NO_VALUE_FROM_FLAG,
 		pathToSwiftKey: *pathToIOSAPP,
 		nameOfDotStringFile: *nameOfDotStringFile,
 		nameOfXMLStringFile: *nameOfXMLStringFile,
@@ -213,6 +256,9 @@ func parseAndGetConfig() (*StringValueConfig, error) {
 		shouldCreateArgumentsInSwiftAPI: true,
 		logMissingStrings: true,
 		reduceKeys: true, //todo set false
+		translatingToDart: *pathToDartApp != NO_VALUE_FROM_FLAG,
+		pathToDartFile: *pathToDartApp,
+
 	}
 
 	return &config, nil
