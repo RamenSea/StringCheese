@@ -56,7 +56,7 @@ const MESSAGE_XCODE_PROJECT = "Optional, REQUIRED to output to iOS\n" +
 const CONFIG_ARG_NAME_OF_XCODE_DOT_STRING_FILE = "dotName" //Optional
 const MESSAGE_NAME_OF_XCODE_DOT_STRING_FILE = "Optional\n" +
 	"        Name of the .strings file.\n"
-const DEFAULT_VALUE_NAME_OF_XCODE_DOT_STRING_FILE = "strings"
+const DEFAULT_VALUE_NAME_OF_XCODE_DOT_STRING_FILE = "String"
 
 const CONFIG_ARG_SHOULD_CREATE_SWIFT_KEYS = "swift" //Optional
 const MESSAGE_SHOULD_CREATE_SWIFT_KEYS = "Optional\n" +
@@ -76,9 +76,6 @@ const CONFIG_ARG_PATH_TO_DART_PROJECT = "dart" //Optional
 const MESSAGE_PATH_TO_DART_PROJECT = "Optional, REQUIRED to output to Dart\n" +
 	"        Root folder of your Dart project. This is where the Dart StringCheese classes will be generated\n"
 
-const CONFIG_ARG_DART_CLASS_IMPORT = "dartimport" //Optional
-const MESSAGE_DART_CLASS_IMPORT = "        a\n"
-const DEFAULT_VALUE_DART_CLASS_IMPORT = "library StringCheese;"
 
 //general
 const CONFIG_ARG_LOG_MISSING_STRINGS = "logMissing" //Optional
@@ -130,7 +127,6 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 	className := flag.String(CONFIG_ARG_CLASS_NAME, DEFAULT_VALUE_CLASS_NAME, MESSAGE_CLASS_NAME)
 	//dart
 	dartProject := flag.String(CONFIG_ARG_PATH_TO_DART_PROJECT, NO_VALUE_FROM_FLAG, MESSAGE_PATH_TO_DART_PROJECT)
-	dartImport := flag.String(CONFIG_ARG_DART_CLASS_IMPORT, NO_VALUE_FROM_FLAG, MESSAGE_DART_CLASS_IMPORT)
 	//general
 	rootLanguage := flag.String(CONFIG_ARG_ROOT_LANGUAGE, DEFAULT_VALUE_ROOT_LANGUAGE, MESSAGE_ROOT_LANGUAGE)
 	rootLanguageIfIfNone := flag.String(CONFIG_ARG_ROOT_LANGUAGE_ID, DEFAULT_VALUE_ROOT_LANGUAGE_ID, MESSAGE_ROOT_LANGUAGE_ID)
@@ -146,7 +142,7 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 		return nil, errors.New("Did not include path to your Android res folder.\n" +
 			"Ex: ./StringValue -a /Users/me/workspace/androidApp/app/src/main/res")
 	}
-	if *iOSProjectRoot == NO_VALUE_FROM_FLAG && (*dartProject == NO_VALUE_FROM_FLAG && *dartImport == NO_VALUE_FROM_FLAG) {
+	if *iOSProjectRoot == NO_VALUE_FROM_FLAG && *dartProject == NO_VALUE_FROM_FLAG {
 		return nil, errors.New("Did not include path to an iOS or Dart project folder.\n" +
 			"Ex: ./StringValue -a /Users/me/workspace/iOSAPP/iOSAPP")
 	}
@@ -177,9 +173,8 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 		pathToSwiftKey: *pathToSwift,
 
 		//dart
-		translatingToDart: *dartProject == NO_VALUE_FROM_FLAG && *dartImport == NO_VALUE_FROM_FLAG,
+		translatingToDart: *dartProject == NO_VALUE_FROM_FLAG,
 		pathToDartFile: *dartProject,
-		dartHeader: *dartImport,
 
 		//general
 		className: *className,
@@ -247,7 +242,6 @@ type StringCheeseConfig struct {
 	//dart
 	translatingToDart bool
 	pathToDartFile string
-	dartHeader string
 
 	//general
 	className string
