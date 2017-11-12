@@ -44,7 +44,7 @@ package main
 //		})
 //	}
 //
-//	s := StringValue{value.Name, value.Name, stringValue, value.Translatable != "false", arguments, argumentString, formatString}
+//	s := StringValue{value.Translatable != "false", value.Name, value.Name, stringValue, arguments, argumentString, formatString}
 //	return &s
 //}
 //func getDartStringValueForLanguage(languageId string, config *StringCheeseConfig) *StringKeys {

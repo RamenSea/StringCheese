@@ -3,6 +3,9 @@ package main
 import (
 	"errors"
 	"os"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
 /*
@@ -15,7 +18,7 @@ import (
  */
 func translateAndroidStringsToIOS(config *StringCheeseConfig) error {
 	//	1. Get root string file
-	rootStringValue := getSwiftStringValueForLanguage(config.rootLanguageId, config)
+	rootStringValue, err := GetStringKeysFromXML(config.rootLanguageId, config, iOSPlatformStringValueProcessor)
 	if rootStringValue == nil {
 		return errors.New("Error loading the root string value")
 		//exit
@@ -28,7 +31,11 @@ func translateAndroidStringsToIOS(config *StringCheeseConfig) error {
 	}
 	stringValues := []*StringKeys{}
 	for _,id := range ids {
-		sv := getSwiftStringValueForLanguage(id, config)
+		sv, err := GetStringKeysFromXML(id, config, iOSPlatformStringValueProcessor)
+		if err != nil {
+			return err
+			//exit
+		}
 		if sv != nil {
 			stringValues = append(stringValues, sv)
 		}
@@ -57,35 +64,16 @@ func translateAndroidStringsToIOS(config *StringCheeseConfig) error {
 	}
 
 	//	6. Generate .strings files
-	writeStringValueToDotStrings(rootStringValue, config)
-	for _,value := range stringValues {
-		writeStringValueToDotStrings(value,config)
-	}
-
-	return nil
-}
-
-
-func writeStringValueToDotStrings(value *StringKeys, config *StringCheeseConfig) {
-	folderPathToDotString := config.DotStringFileWithLanguageId(value.languageId)
-	_ = os.MkdirAll(folderPathToDotString, os.ModePerm) //skipped err check
-
-	pathToDotString := config.DotStringFileWithLanguageId(value.languageId)
-	//remove old string file
-	_ = os.Remove(pathToDotString) //skipped err check
-	file, err := os.Create(pathToDotString)
+	err = writeStringValueToDotStrings(rootStringValue, config)
 	if err != nil {
-		//todo log
-		return
+		return err
 	}
-	valueMap := value.strings
-
-	file.WriteString(config.timeStampString)
-	for key, value := range valueMap {
-		if value.translatable {
-			file.WriteString("\"" + key + "\"=\"" + value.value + "\";\n")
+	for _,value := range stringValues {
+		err = writeStringValueToDotStrings(value,config)
+		if err != nil {
+			return err
 		}
 	}
 
-	file.Close()
+	return nil
 }

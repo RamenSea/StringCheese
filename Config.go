@@ -108,6 +108,12 @@ const MESSAGE_CLASS_IS_STATIC = "Optional\n" +
 	"Default: false"
 const DEFAULT_VALUE_CLASS_IS_STATIC = false
 
+const CONFIG_ARG_SKIP_NON_VALID_LANGUAGE_ID = "useValidLangId" //Optional
+const MESSAGE_SKIP_NON_VALID_LANGUAGE_ID = "Optional\n" +
+	"Skips a values-LANGUAGE_ID folder if the id is not valid\n" +
+	"Default: true"
+const DEFAULT_VALUE_SKIP_NON_VALID_LANGUAGE_ID = false
+
 const NO_VALUE_FROM_FLAG = "NONE"
 const DEFAULT_LANGUAGE_ID = LANGUAGE_ID_NONE
 
@@ -134,6 +140,7 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 	reduceKeys := flag.Bool(CONFIG_ARG_REDUCE_KEYS, DEFAULT_VALUE_REDUCE_KEYS, MESSAGE_REDUCE_KEYS)
 	keyClassesHaveArgs := flag.Bool(CONFIG_ARG_KEY_HAS_ARGUMENTS, DEFAULT_VALUE_KEY_HAS_ARGUMENTS, MESSAGE_KEY_HAS_ARGUMENTS)
 	staticClassKey := flag.Bool(CONFIG_ARG_CLASS_IS_STATIC, DEFAULT_VALUE_CLASS_IS_STATIC, MESSAGE_CLASS_IS_STATIC)
+	skipNonValidLanguageIds := flag.Bool(CONFIG_ARG_SKIP_NON_VALID_LANGUAGE_ID, DEFAULT_VALUE_SKIP_NON_VALID_LANGUAGE_ID, MESSAGE_SKIP_NON_VALID_LANGUAGE_ID)
 
 	flag.Parse()
 
@@ -168,7 +175,7 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 		swiftClassName: *swiftClassName,
 
 		//dart
-		translatingToDart: (*dartProject == NO_VALUE_FROM_FLAG && *dartImport == NO_VALUE_FROM_FLAG),
+		translatingToDart: *dartProject == NO_VALUE_FROM_FLAG && *dartImport == NO_VALUE_FROM_FLAG,
 		pathToDartFile: *dartProject,
 		dartHeader: *dartImport,
 
@@ -177,6 +184,7 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 		reduceKeys: *reduceKeys,
 		shouldCreateArguments: *keyClassesHaveArgs,
 		createStaticKeyClass: *staticClassKey,
+		skipNonValidLanguageIds: *skipNonValidLanguageIds,
 	}
 
 	return &config, nil
@@ -203,8 +211,10 @@ func (config *StringCheeseConfig) GetAllValueFoldersLanguageIds() ([]string, err
 		if strings.Contains(name, "values") {
 			s := strings.Split(name, "-")
 			if len(s) > 1 {
-				//todo add valid language checks
-				languageIds = append(languageIds, s[1])
+				langId := s[1]
+				if CheckIfValidLanguageCode(langId) || !config.skipNonValidLanguageIds {
+					languageIds = append(languageIds, s[1])
+				}
 			}
 		}
 	}
@@ -241,4 +251,5 @@ type StringCheeseConfig struct {
 	createStaticKeyClass bool
 	reduceKeys bool
 	logMissingStrings bool
+	skipNonValidLanguageIds bool
 }

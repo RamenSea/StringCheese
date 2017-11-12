@@ -2,13 +2,8 @@ package main
 
 import (
 	"fmt"
-	"errors"
 )
 /*
-TODO:
-#1 Only check values folders with actually languages
-
-
 Maybes:
 Handle different types of string arguments other than just strings
  */
@@ -31,6 +26,7 @@ func main() {
 			fmt.Println(err)
 		}
 	}
+
 
 	//if config.translatingToDart {
 	//	err = translateAndroidStringsToDart(config)
@@ -85,3 +81,4 @@ func main() {
 //
 //	return nil
 //}
+
