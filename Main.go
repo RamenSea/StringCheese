@@ -4,8 +4,9 @@ import (
 	"fmt"
 )
 /*
-Maybes:
-Handle different types of string arguments other than just strings
+todo
+1. re-enable dart
+2. Handle different types of string arguments other than just strings
  */
 
 func main() {

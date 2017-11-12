@@ -21,21 +21,19 @@ const LANGUAGE_ID_NONE_NAME = "en"
 //Android related
 const CONFIG_ARG_ANDROID_RES = "a" //REQUIRED
 const MESSAGE_ANDROID_RES = "REQUIRED\n" +
-	"Path to your Android res folder.\n" +
-	"Ex: /Users/me/workspace/project/android/project_name/app/src/main/res"
+	"        Path to your Android res folder.\n" +
+	"        Ex: /Users/me/workspace/project/android/project_name/app/src/main/res\n"
 
 const CONFIG_ARG_NAME_OF_STRING_XML_FILE = "s_xml" //Optional
 const MESSAGE_NAME_OF_STRING_XML_FILE = "Optional\n" +
-	"Name of your xml file containing strings.\n" +
-	"Ex: strings.sml\n" +
-							"Default: " + DEFAULT_VALUE_NAME_OF_STRING_XML_FILE
+	"        Name of your xml file containing strings.\n"
 const DEFAULT_VALUE_NAME_OF_STRING_XML_FILE = "strings" //.xml
 
 const CONFIG_ARG_ROOT_LANGUAGE = "lang" //Optional
 const MESSAGE_ROOT_LANGUAGE = "Optional\n" +
-	"Id of language to use as the base string xml file.\n" +
-	"For example en if you want the file 'values-en/strings.xml' to be used as the root language.\n" +
-	"If left blank the default folder will be values/strings.xml"
+	"        Id of language to use as the base string xml file.\n" +
+	"        For example en if you want the file 'values-en/strings.xml' to be used as the root language.\n" +
+	"        If left blank the default folder will be values/strings.xml\n"
 const DEFAULT_VALUE_ROOT_LANGUAGE = LANGUAGE_ID_NONE
 
 //const CONFIG_ARG_ROOT_LANGUAGE_ID = "langId" //Optional
@@ -46,30 +44,27 @@ const DEFAULT_VALUE_ROOT_LANGUAGE = LANGUAGE_ID_NONE
 //iOS related
 const CONFIG_ARG_XCODE_PROJECT = "i" //Optional REQUIRED FOR IOS
 const MESSAGE_XCODE_PROJECT = "Optional, REQUIRED to output to iOS\n" +
-	"Root folder of your iOS project. This is where the .strings files will be created.\n"
+	"        Root folder of your iOS project. This is where the .strings files will be created.\n"
 
 const CONFIG_ARG_NAME_OF_XCODE_DOT_STRING_FILE = "dotName" //Optional
 const MESSAGE_NAME_OF_XCODE_DOT_STRING_FILE = "Optional\n" +
-	"Name of the .strings file.\n" +
-		"Default: " + DEFAULT_VALUE_NAME_OF_XCODE_DOT_STRING_FILE
+	"        Name of the .strings file.\n"
 const DEFAULT_VALUE_NAME_OF_XCODE_DOT_STRING_FILE = "strings"
 
 const CONFIG_ARG_SHOULD_CREATE_SWIFT_KEYS = "swift" //Optional
 const MESSAGE_SHOULD_CREATE_SWIFT_KEYS = "Optional\n" +
-	"If a swift key file should be generated.\n" +
-		"Default: true"
+	"        If a swift key file should be generated.\n"
 const DEFAULT_VALUE_SHOULD_CREATE_SWIFT_KEYS = true //this is relative to XCODE_PROJECT
 
 const CONFIG_ARG_PATH_TO_SWIFT_FILE = "swiftLoc" //Optional
 const MESSAGE_PATH_TO_SWIFT_FILE = "Optional\n" +
-	"Relative path inside the XCode project where the Swift StringCheese key class will be generated.\n" +
-		"If empty, this will generate it at the root of the project."
+	"        Relative path inside the XCode project where the Swift StringCheese key class will be generated.\n" +
+		"        If empty, this will generate it at the root of the project.\n"
 const DEFAULT_VALUE_PATH_TO_SWIFT_FILE = "" //this is relative to XCODE_PROJECT
 
 const CONFIG_ARG_SWIFT_CLASS_NAME = "swiftName" //Optional
 const MESSAGE_SWIFT_CLASS_NAME = "Optional\n" +
-	"The name of the Swift class that will be generated\n" +
-	"Default: " + DEFAULT_VALUE_SWIFT_CLASS_NAME
+	"        The name of the Swift class that will be generated\n"
 const DEFAULT_VALUE_SWIFT_CLASS_NAME = "StringCheese"
 
 
@@ -77,41 +72,36 @@ const DEFAULT_VALUE_SWIFT_CLASS_NAME = "StringCheese"
 //Dart related
 const CONFIG_ARG_PATH_TO_DART_PROJECT = "dart" //Optional
 const MESSAGE_PATH_TO_DART_PROJECT = "Optional, REQUIRED to output to Dart\n" +
-	"Root folder of your Dart project. This is where the Dart StringCheese classes will be generated\n"
+	"        Root folder of your Dart project. This is where the Dart StringCheese classes will be generated\n"
 
-const CONFIG_ARG_DART_CLASS_IMPORT = "a" //Optional
-const MESSAGE_DART_CLASS_IMPORT = "a"
+const CONFIG_ARG_DART_CLASS_IMPORT = "dartimport" //Optional
+const MESSAGE_DART_CLASS_IMPORT = "        a\n"
 const DEFAULT_VALUE_DART_CLASS_IMPORT = "library StringCheese;"
 
 //general
 const CONFIG_ARG_LOG_MISSING_STRINGS = "logMissing" //Optional
 const MESSAGE_LOG_MISSING_STRINGS = "Optional\n" +
-	"Logs to the console if there are any missing strings in your strings.xml files\n" +
-		"Default: true"
+	"        Logs to the console if there are any missing strings in your strings.xml files\n"
 const DEFAULT_VALUE_LOG_MISSING_STRINGS = true
 
 const CONFIG_ARG_REDUCE_KEYS = "reduce" //Optional
 const MESSAGE_REDUCE_KEYS = "Optional\n" +
-	"Reduces keys in outputted key classes\n" +
-	"Default: true"
+	"        Reduces keys in outputted key classes\n"
 const DEFAULT_VALUE_REDUCE_KEYS = true
 
 const CONFIG_ARG_KEY_HAS_ARGUMENTS = "useArgs" //Optional
 const MESSAGE_KEY_HAS_ARGUMENTS = "Optional\n" +
-	"If the key class generated generates a special argument method for strings with format points.\n" +
-	"Default: true"
+	"        If the key class generated generates a special argument method for strings with format points.\n"
 const DEFAULT_VALUE_KEY_HAS_ARGUMENTS = true
 
 const CONFIG_ARG_CLASS_IS_STATIC = "static" //Optional
 const MESSAGE_CLASS_IS_STATIC = "Optional\n" +
-	"If the generated key file is static\n" +
-	"Default: false"
+	"        If the generated key file is static\n"
 const DEFAULT_VALUE_CLASS_IS_STATIC = false
 
 const CONFIG_ARG_SKIP_NON_VALID_LANGUAGE_ID = "useValidLangId" //Optional
 const MESSAGE_SKIP_NON_VALID_LANGUAGE_ID = "Optional\n" +
-	"Skips a values-LANGUAGE_ID folder if the id is not valid\n" +
-	"Default: true"
+	"        Skips a values-LANGUAGE_ID folder if the id is not valid\n"
 const DEFAULT_VALUE_SKIP_NON_VALID_LANGUAGE_ID = false
 
 const NO_VALUE_FROM_FLAG = "NONE"
@@ -122,7 +112,6 @@ const DEFAULT_LANGUAGE_ID = LANGUAGE_ID_NONE
 */
 func parseAndGetConfig() (*StringCheeseConfig, error) {
 
-	rootLanguage := flag.String(CONFIG_ARG_ROOT_LANGUAGE, DEFAULT_VALUE_ROOT_LANGUAGE, MESSAGE_ROOT_LANGUAGE)
 	//android related
 	pathToAndroidRes := flag.String(CONFIG_ARG_ANDROID_RES, NO_VALUE_FROM_FLAG, MESSAGE_ANDROID_RES)
 	nameOfXMLFile := flag.String(CONFIG_ARG_NAME_OF_STRING_XML_FILE, DEFAULT_VALUE_NAME_OF_STRING_XML_FILE, MESSAGE_NAME_OF_STRING_XML_FILE)
@@ -136,6 +125,7 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 	dartProject := flag.String(CONFIG_ARG_PATH_TO_DART_PROJECT, NO_VALUE_FROM_FLAG, MESSAGE_PATH_TO_DART_PROJECT)
 	dartImport := flag.String(CONFIG_ARG_DART_CLASS_IMPORT, NO_VALUE_FROM_FLAG, MESSAGE_DART_CLASS_IMPORT)
 	//general
+	rootLanguage := flag.String(CONFIG_ARG_ROOT_LANGUAGE, DEFAULT_VALUE_ROOT_LANGUAGE, MESSAGE_ROOT_LANGUAGE)
 	logMissingStrings := flag.Bool(CONFIG_ARG_LOG_MISSING_STRINGS, DEFAULT_VALUE_LOG_MISSING_STRINGS, MESSAGE_LOG_MISSING_STRINGS)
 	reduceKeys := flag.Bool(CONFIG_ARG_REDUCE_KEYS, DEFAULT_VALUE_REDUCE_KEYS, MESSAGE_REDUCE_KEYS)
 	keyClassesHaveArgs := flag.Bool(CONFIG_ARG_KEY_HAS_ARGUMENTS, DEFAULT_VALUE_KEY_HAS_ARGUMENTS, MESSAGE_KEY_HAS_ARGUMENTS)
