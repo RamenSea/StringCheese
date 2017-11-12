@@ -19,21 +19,21 @@ func SwiftTransformKeyToSwiftVarName(key string) string {
 /*
 	Writes the Swift StringKey api for a given StringKey struct
  */
-func writeSwiftKeyFile(value *StringKeys, config *StringCheeseConfig) {
-	pathToSwiftKey := config.pathToSwiftKey + "/" + config.swiftClassName + ".swift"
+func WriteSwiftKeyFile(value *StringKeys, config *StringCheeseConfig) error {
+	pathToSwiftKey := config.pathToIOSProject + config.pathToSwiftKey + "/" + config.swiftClassName + ".swift"
 	_ = os.Remove(pathToSwiftKey) //skipped err check
 	file, err := os.Create(pathToSwiftKey)
 	if err != nil {
-		//todo log
-		return
+		return err
 	}
 
 	file.WriteString(config.timeStampString +
+		"//This will be deleted and generated each time you run StringCheese.\n" +
 		"import Foundation\n" +
 		"\n" +
 		"class " + config.swiftClassName + " { \n")
 
-	if config.useStaticForSwiftAPI {
+	if config.createStaticKeyClass {
 		file.WriteString("	private static var _shared: " + config.swiftClassName + "? = nil\n" +
 			"	static var shared: " + config.swiftClassName + " {\n" +
 			"		if let s = _shared {\n" +
@@ -50,7 +50,7 @@ func writeSwiftKeyFile(value *StringKeys, config *StringCheeseConfig) {
 		"	}\n")
 	valueMap := value.strings
 
-	writeArgSwiftFuncs := config.shouldCreateArgumentsInSwiftAPI
+	writeArgSwiftFuncs := config.shouldCreateArguments
 
 	for _, value := range valueMap {
 		if value.translatable == false {
@@ -76,4 +76,6 @@ func writeSwiftKeyFile(value *StringKeys, config *StringCheeseConfig) {
 	}
 	file.WriteString("}")
 	file.Close()
+
+	return nil
 }

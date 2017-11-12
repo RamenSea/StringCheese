@@ -80,27 +80,3 @@ func getSwiftStringValueForLanguage(languageId string, config *StringCheeseConfi
 	fileReader.Close()
 	return &values
 }
-
-func writeStringValueToDotStrings(value *StringKeys, config *StringCheeseConfig) {
-	folderPathToDotString := config.DotStringFileWithLanguageId(value.languageId)
-	_ = os.MkdirAll(folderPathToDotString, os.ModePerm) //skipped err check
-
-	pathToDotString := config.DotStringFileWithLanguageId(value.languageId)
-	//remove old string file
-	_ = os.Remove(pathToDotString) //skipped err check
-	file, err := os.Create(pathToDotString)
-	if err != nil {
-		//todo log
-		return
-	}
-	valueMap := value.strings
-
-	file.WriteString(config.timeStampString)
-	for key, value := range valueMap {
-		if value.translatable {
-			file.WriteString("\"" + key + "\"=\"" + value.value + "\";\n")
-		}
-	}
-
-	file.Close()
-}

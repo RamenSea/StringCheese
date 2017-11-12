@@ -1,6 +1,9 @@
 package main
 
-import "errors"
+import (
+	"errors"
+	"os"
+)
 
 /*
 	1. Get root string file
@@ -50,8 +53,7 @@ func translateAndroidStringsToIOS(config *StringCheeseConfig) error {
 				value.CopyKeys(rootStringValue)
 			}
 		}
-
-		writeSwiftKeyFile(rootStringValue, config)
+		WriteSwiftKeyFile(rootStringValue, config)
 	}
 
 	//	6. Generate .strings files
@@ -61,4 +63,29 @@ func translateAndroidStringsToIOS(config *StringCheeseConfig) error {
 	}
 
 	return nil
+}
+
+
+func writeStringValueToDotStrings(value *StringKeys, config *StringCheeseConfig) {
+	folderPathToDotString := config.DotStringFileWithLanguageId(value.languageId)
+	_ = os.MkdirAll(folderPathToDotString, os.ModePerm) //skipped err check
+
+	pathToDotString := config.DotStringFileWithLanguageId(value.languageId)
+	//remove old string file
+	_ = os.Remove(pathToDotString) //skipped err check
+	file, err := os.Create(pathToDotString)
+	if err != nil {
+		//todo log
+		return
+	}
+	valueMap := value.strings
+
+	file.WriteString(config.timeStampString)
+	for key, value := range valueMap {
+		if value.translatable {
+			file.WriteString("\"" + key + "\"=\"" + value.value + "\";\n")
+		}
+	}
+
+	file.Close()
 }
