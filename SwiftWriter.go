@@ -20,7 +20,7 @@ func SwiftTransformKeyToSwiftVarName(key string) string {
 	Writes the Swift StringKey api for a given StringKey struct
  */
 func WriteSwiftKeyFile(value *StringKeys, config *StringCheeseConfig) error {
-	pathToSwiftKey := config.pathToIOSProject + config.pathToSwiftKey + "/" + config.swiftClassName + ".swift"
+	pathToSwiftKey := config.pathToIOSProject + config.pathToSwiftKey + "/" + config.className + ".swift"
 	_ = os.Remove(pathToSwiftKey) //skipped err check
 	file, err := os.Create(pathToSwiftKey)
 	if err != nil {
@@ -31,15 +31,15 @@ func WriteSwiftKeyFile(value *StringKeys, config *StringCheeseConfig) error {
 		"//This will be deleted and generated each time you run StringCheese.\n" +
 		"import Foundation\n" +
 		"\n" +
-		"class " + config.swiftClassName + " { \n")
+		"class " + config.className + " { \n")
 
 	if config.createStaticKeyClass {
-		file.WriteString("	private static var _shared: " + config.swiftClassName + "? = nil\n" +
-			"	static var shared: " + config.swiftClassName + " {\n" +
+		file.WriteString("	private static var _shared: " + config.className + "? = nil\n" +
+			"	static var shared: " + config.className + " {\n" +
 			"		if let s = _shared {\n" +
 			"			return s\n" +
 			"		}\n" +
-			"		let s = " + config.swiftClassName + "()\n" +
+			"		let s = " + config.className + "()\n" +
 			"		_shared = s\n" +
 			"		return s\n" +
 			"	}\n\n")

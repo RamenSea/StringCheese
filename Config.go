@@ -36,6 +36,13 @@ const MESSAGE_ROOT_LANGUAGE = "Optional\n" +
 	"        If left blank the default folder will be values/strings.xml\n"
 const DEFAULT_VALUE_ROOT_LANGUAGE = LANGUAGE_ID_NONE
 
+const CONFIG_ARG_ROOT_LANGUAGE_ID = "langId" //Optional
+const MESSAGE_ROOT_LANGUAGE_ID = "Optional\n" +
+	"        Id of language to use as the base id for -lang if none is specified\n" +
+	"        This value will be overwritten by -lang\n" +
+	"        For right now this is only used with Dart\n"
+const DEFAULT_VALUE_ROOT_LANGUAGE_ID = LANGUAGE_ID_NONE_NAME
+
 //const CONFIG_ARG_ROOT_LANGUAGE_ID = "langId" //Optional
 //const MESSAGE_ROOT_LANGUAGE_ID = "Optional\n" +
 //	"Id of root language. This will override -lang's value when outputting to "
@@ -61,11 +68,6 @@ const MESSAGE_PATH_TO_SWIFT_FILE = "Optional\n" +
 	"        Relative path inside the XCode project where the Swift StringCheese key class will be generated.\n" +
 		"        If empty, this will generate it at the root of the project.\n"
 const DEFAULT_VALUE_PATH_TO_SWIFT_FILE = "" //this is relative to XCODE_PROJECT
-
-const CONFIG_ARG_SWIFT_CLASS_NAME = "swiftName" //Optional
-const MESSAGE_SWIFT_CLASS_NAME = "Optional\n" +
-	"        The name of the Swift class that will be generated\n"
-const DEFAULT_VALUE_SWIFT_CLASS_NAME = "StringCheese"
 
 
 
@@ -104,8 +106,13 @@ const MESSAGE_SKIP_NON_VALID_LANGUAGE_ID = "Optional\n" +
 	"        Skips a values-LANGUAGE_ID folder if the id is not valid\n"
 const DEFAULT_VALUE_SKIP_NON_VALID_LANGUAGE_ID = false
 
+const CONFIG_ARG_CLASS_NAME = "className" //Optional
+const MESSAGE_CLASS_NAME = "Optional\n" +
+	"        The name of the Class that will be generated\n"
+const DEFAULT_VALUE_CLASS_NAME = "StringCheese"
+
+
 const NO_VALUE_FROM_FLAG = "NONE"
-const DEFAULT_LANGUAGE_ID = LANGUAGE_ID_NONE
 
 /*
 	Processes CLI arguments
@@ -120,12 +127,13 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 	nameOfDotStrings := flag.String(CONFIG_ARG_NAME_OF_XCODE_DOT_STRING_FILE, DEFAULT_VALUE_NAME_OF_XCODE_DOT_STRING_FILE, MESSAGE_NAME_OF_XCODE_DOT_STRING_FILE)
 	createSwiftKey := flag.Bool(CONFIG_ARG_SHOULD_CREATE_SWIFT_KEYS, DEFAULT_VALUE_SHOULD_CREATE_SWIFT_KEYS, MESSAGE_SHOULD_CREATE_SWIFT_KEYS)
 	pathToSwift := flag.String(CONFIG_ARG_PATH_TO_SWIFT_FILE, DEFAULT_VALUE_PATH_TO_SWIFT_FILE, MESSAGE_PATH_TO_SWIFT_FILE)
-	swiftClassName := flag.String(CONFIG_ARG_SWIFT_CLASS_NAME, DEFAULT_VALUE_SWIFT_CLASS_NAME, MESSAGE_SWIFT_CLASS_NAME)
+	className := flag.String(CONFIG_ARG_CLASS_NAME, DEFAULT_VALUE_CLASS_NAME, MESSAGE_CLASS_NAME)
 	//dart
 	dartProject := flag.String(CONFIG_ARG_PATH_TO_DART_PROJECT, NO_VALUE_FROM_FLAG, MESSAGE_PATH_TO_DART_PROJECT)
 	dartImport := flag.String(CONFIG_ARG_DART_CLASS_IMPORT, NO_VALUE_FROM_FLAG, MESSAGE_DART_CLASS_IMPORT)
 	//general
 	rootLanguage := flag.String(CONFIG_ARG_ROOT_LANGUAGE, DEFAULT_VALUE_ROOT_LANGUAGE, MESSAGE_ROOT_LANGUAGE)
+	rootLanguageIfIfNone := flag.String(CONFIG_ARG_ROOT_LANGUAGE_ID, DEFAULT_VALUE_ROOT_LANGUAGE_ID, MESSAGE_ROOT_LANGUAGE_ID)
 	logMissingStrings := flag.Bool(CONFIG_ARG_LOG_MISSING_STRINGS, DEFAULT_VALUE_LOG_MISSING_STRINGS, MESSAGE_LOG_MISSING_STRINGS)
 	reduceKeys := flag.Bool(CONFIG_ARG_REDUCE_KEYS, DEFAULT_VALUE_REDUCE_KEYS, MESSAGE_REDUCE_KEYS)
 	keyClassesHaveArgs := flag.Bool(CONFIG_ARG_KEY_HAS_ARGUMENTS, DEFAULT_VALUE_KEY_HAS_ARGUMENTS, MESSAGE_KEY_HAS_ARGUMENTS)
@@ -143,6 +151,10 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 			"Ex: ./StringValue -a /Users/me/workspace/iOSAPP/iOSAPP")
 	}
 
+	var usingRootLanguageId = rootLanguageIfIfNone
+	if (*rootLanguage == LANGUAGE_ID_NONE) {
+		usingRootLanguageId = rootLanguage
+	}
 	//if *defaultLang == NO_VALUE_FROM_FLAG {
 	//	*defaultLang = DEFAULT_LANGUAGE_ID
 	//}
@@ -151,6 +163,7 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 	config := StringCheeseConfig{
 		timeStampString: timeStamp,
 		rootLanguageId: *rootLanguage,
+		rootLanguageIdToUse: *usingRootLanguageId,
 
 		//android
 		pathToAndroidRes: *pathToAndroidRes,
@@ -162,7 +175,6 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 		nameOfDotStringFile: *nameOfDotStrings,
 		shouldCreateSwiftKey: *createSwiftKey,
 		pathToSwiftKey: *pathToSwift,
-		swiftClassName: *swiftClassName,
 
 		//dart
 		translatingToDart: *dartProject == NO_VALUE_FROM_FLAG && *dartImport == NO_VALUE_FROM_FLAG,
@@ -170,6 +182,7 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 		dartHeader: *dartImport,
 
 		//general
+		className: *className,
 		logMissingStrings: *logMissingStrings,
 		reduceKeys: *reduceKeys,
 		shouldCreateArguments: *keyClassesHaveArgs,
@@ -218,6 +231,7 @@ type StringCheeseConfig struct {
 	//base
 	timeStampString string
 	rootLanguageId string
+	rootLanguageIdToUse string
 
 	//android
 	pathToAndroidRes string
@@ -229,7 +243,6 @@ type StringCheeseConfig struct {
 	nameOfDotStringFile string
 	shouldCreateSwiftKey bool
 	pathToSwiftKey string
-	swiftClassName string
 
 	//dart
 	translatingToDart bool
@@ -237,6 +250,7 @@ type StringCheeseConfig struct {
 	dartHeader string
 
 	//general
+	className string
 	shouldCreateArguments bool
 	createStaticKeyClass bool
 	reduceKeys bool
