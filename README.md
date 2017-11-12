@@ -12,16 +12,21 @@ It also generates a key class to help implementing the strings in your applicati
 * Both Dart and Swift key classes have string formatting methods with arguments. (ex: `stringCheese.someKeyWithFormats("arg1","arg2")`)
 * Good defaults
 ### Quick use:
-`./StringCheese -a <PATH_TO_ANDROID_RES_FOLDER> -i <PATH_TO_ROOT_OF_XCODE_PROJECT>`
 
-`./StringCheese -a <PATH_TO_ANDROID_RES_FOLDER> -dart <PATH_TO_DART_PROJECT>`
+1. Run StringCheese.
 
-`-a` is required and should be set to your Android's res folder
+    `./StringCheese -a <PATH_TO_ANDROID_RES_FOLDER> -i <PATH_TO_ROOT_OF_XCODE_PROJECT>`
 
-`-i` is required if you want to output to XCode
+    `./StringCheese -a <PATH_TO_ANDROID_RES_FOLDER> -dart <PATH_TO_DART_PROJECT>`
 
-`-dart` is required if you want to output to Dart
+    `-a` is required and should be set to your Android's res folder
 
+    `-i` is required if you want to output to XCode
+
+    `-dart` is required if you want to output to Dart
+
+2. If this is the first time running the program add the files to your XCode or Dart project.
+3. Import and create the StringCheese class
 ### Todo:
 
 * Increase tests
@@ -46,9 +51,6 @@ It also generates a key class to help implementing the strings in your applicati
         Root folder of your Dart project. This is where the Dart StringCheese classes will be generated
  (default "NONE")
  
-  -dartimport string
-                a
- (default "NONE")
   -dotName string
         Optional
         Name of the .strings file.
@@ -58,6 +60,7 @@ It also generates a key class to help implementing the strings in your applicati
         Optional, REQUIRED to output to iOS
         Root folder of your iOS project. This is where the .strings files will be created.
  (default "NONE")
+ 
   -lang string
         Optional
         Id of language to use as the base string xml file.
@@ -95,6 +98,7 @@ It also generates a key class to help implementing the strings in your applicati
         Optional
         If a swift key file should be generated.
  (default true)
+ 
   -swiftLoc string
         Optional
         Relative path inside the XCode project where the Swift StringCheese key class will be generated.
@@ -104,7 +108,7 @@ It also generates a key class to help implementing the strings in your applicati
         Optional
         If the key class generated generates a special argument method for strings with format points.
  (default true)
+ 
   -useValidLangId
         Optional
         Skips a values-LANGUAGE_ID folder if the id is not valid
-
