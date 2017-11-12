@@ -9,7 +9,7 @@ import (
 	"regexp"
 )
 
-func CreateSwiftStringValue(value XMLStringValue, config *StringValueConfig) *StringValue {
+func CreateSwiftStringValue(value XMLStringValue, config *StringCheeseConfig) *StringValue {
 	stringValue := value.Value
 
 	//%1$s
@@ -53,7 +53,7 @@ func CreateSwiftStringValue(value XMLStringValue, config *StringValueConfig) *St
 	s := StringValue{value.Name, value.Name, stringValue, value.Translatable != "false", arguments, argumentString, formatString}
 	return &s
 }
-func getSwiftStringValueForLanguage(languageId string, config *StringValueConfig) *StringKeys {
+func getSwiftStringValueForLanguage(languageId string, config *StringCheeseConfig) *StringKeys {
 	valueFolderName := "/values-" + languageId + "/"
 	if languageId == LANGUAGE_ID_NONE {
 		valueFolderName = "/values/"
@@ -81,7 +81,7 @@ func getSwiftStringValueForLanguage(languageId string, config *StringValueConfig
 	return &values
 }
 
-func writeStringValueToDotStrings(value *StringKeys, config *StringValueConfig) {
+func writeStringValueToDotStrings(value *StringKeys, config *StringCheeseConfig) {
 	folderPathToDotString := config.DotStringFileWithLanguageId(value.languageId)
 	_ = os.MkdirAll(folderPathToDotString, os.ModePerm) //skipped err check
 

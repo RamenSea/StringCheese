@@ -19,7 +19,7 @@ func SwiftTransformKeyToSwiftVarName(key string) string {
 /*
 	Writes the Swift StringKey api for a given StringKey struct
  */
-func writeSwiftKeyFile(value *StringKeys, config *StringValueConfig) {
+func writeSwiftKeyFile(value *StringKeys, config *StringCheeseConfig) {
 	pathToSwiftKey := config.pathToSwiftKey + "/" + config.swiftClassName + ".swift"
 	_ = os.Remove(pathToSwiftKey) //skipped err check
 	file, err := os.Create(pathToSwiftKey)

@@ -13,22 +13,22 @@ func DartTransformKeyToDartVarName(key string) string {
 	})
 	return strings.Replace(workingKey, "_","",-1)
 }
-func getDartClassName(value *StringKeys,  config *StringValueConfig) string {
+func getDartClassName(value *StringKeys,  config *StringCheeseConfig) string {
 	if (value.languageId == LANGUAGE_ID_NONE) {
 		return config.idOfNoLanguage + "_" + config.swiftClassName
 	}
 	return value.languageId + "_" + config.swiftClassName
 }
-func getDartClassFileName(value *StringKeys,  config *StringValueConfig) string {
+func getDartClassFileName(value *StringKeys,  config *StringCheeseConfig) string {
 	return getDartClassName(value, config) + ".dart"
 }
-func getAbstractDartClassFileName(config *StringValueConfig) string {
+func getAbstractDartClassFileName(config *StringCheeseConfig) string {
 	return config.swiftClassName + ".dart"
 }
 /*
 	Writes the Swift StringKey api for a given StringKey struct
  */
-func writeDartFile(rootValue *StringKeys, values []*StringKeys, config *StringValueConfig) {
+func writeDartFile(rootValue *StringKeys, values []*StringKeys, config *StringCheeseConfig) {
 	pathToDartFolder := config.pathToDartFile + "/" + strings.ToLower(config.swiftClassName)
 
 	err := os.RemoveAll(pathToDartFolder) //skipped err check
@@ -47,7 +47,7 @@ func writeDartFile(rootValue *StringKeys, values []*StringKeys, config *StringVa
 		writeOutSpecificDartFile(value, config)
 	}
 }
-func writeAbstractDartClass(rootValue *StringKeys, values []*StringKeys, config *StringValueConfig) {
+func writeAbstractDartClass(rootValue *StringKeys, values []*StringKeys, config *StringCheeseConfig) {
 	pathToDartFile := config.pathToDartFile + "/" + strings.ToLower(config.swiftClassName) + "/" + getAbstractDartClassFileName(config)
 	_ = os.Remove(pathToDartFile) //skipped err check
 	file, err := os.Create(pathToDartFile)
@@ -127,7 +127,7 @@ func writeAbstractDartClass(rootValue *StringKeys, values []*StringKeys, config 
 	file.Close()
 }
 
-func writeOutSpecificDartFile(value *StringKeys, config *StringValueConfig) {
+func writeOutSpecificDartFile(value *StringKeys, config *StringCheeseConfig) {
 	pathToDartFile := config.pathToDartFile + "/" + strings.ToLower(config.swiftClassName) + "/" + getDartClassFileName(value, config)
 
 	_ = os.Remove(pathToDartFile) //skipped err check

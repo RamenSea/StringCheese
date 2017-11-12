@@ -9,7 +9,7 @@ import (
 	"regexp"
 )
 
-func CreateDartStringValue(value XMLStringValue, config *StringValueConfig) *StringValue {
+func CreateDartStringValue(value XMLStringValue, config *StringCheeseConfig) *StringValue {
 	stringValue := value.Value
 
 	//%1$s
@@ -47,7 +47,7 @@ func CreateDartStringValue(value XMLStringValue, config *StringValueConfig) *Str
 	s := StringValue{value.Name, value.Name, stringValue, value.Translatable != "false", arguments, argumentString, formatString}
 	return &s
 }
-func getDartStringValueForLanguage(languageId string, config *StringValueConfig) *StringKeys {
+func getDartStringValueForLanguage(languageId string, config *StringCheeseConfig) *StringKeys {
 	valueFolderName := "/values-" + languageId + "/"
 	if languageId == LANGUAGE_ID_NONE {
 		valueFolderName = "/values/"

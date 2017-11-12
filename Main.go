@@ -12,8 +12,6 @@ TODO:
 Maybes:
 Handle different types of string arguments other than just strings
  */
-const LANGUAGE_ID_NONE = "ROOT"
-const LANGUAGE_ID_NONE_NAME = "en"
 
 func main() {
 	config, err := parseAndGetConfig() //In config.go
@@ -44,7 +42,7 @@ func main() {
 		}
 	}
 }
-func translateAndroidStringsToIOS(config *StringValueConfig) error {
+func translateAndroidStringsToIOS(config *StringCheeseConfig) error {
 	rootStringValue := getSwiftStringValueForLanguage(config.rootLanguageId, config)
 	if rootStringValue == nil {
 		return errors.New("Error loading the root string value")
@@ -94,7 +92,7 @@ func translateAndroidStringsToIOS(config *StringValueConfig) error {
 	return nil
 }
 
-func translateAndroidStringsToDart(config *StringValueConfig) error {
+func translateAndroidStringsToDart(config *StringCheeseConfig) error {
 	rootStringValue := getDartStringValueForLanguage(config.rootLanguageId, config)
 	if rootStringValue == nil {
 		return errors.New("Error loading the root string value")

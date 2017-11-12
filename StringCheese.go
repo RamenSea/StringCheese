@@ -33,7 +33,7 @@ type XMLResource struct {
 	Strings []XMLStringValue `xml:"string"`
 }
 
-func (main *StringKeys) CompareAndAddValues(skipUntranslatableStrings bool, other *StringKeys, config *StringValueConfig) {
+func (main *StringKeys) CompareAndAddValues(skipUntranslatableStrings bool, other *StringKeys, config *StringCheeseConfig) {
 	for otherKey, otherValue := range other.strings {
 		if skipUntranslatableStrings && otherValue.translatable == false {
 			continue
