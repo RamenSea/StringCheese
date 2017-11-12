@@ -2,8 +2,6 @@
 .idea
 
 
-
-
 ### Go git ingnore
 # Binaries for programs and plugins
 *.exe
@@ -22,5 +20,6 @@
 
 
 #The compiled binary and iml
-StringValue
-StringValue.iml
+StringCheese
+StringCheese.iml
+.DS_Store
