@@ -1,8 +1,8 @@
 # StringCheese
-###Overview:
+##Overview:
 StringCheese is a simple string translator that turns Android's strings.xml files into iOS' .strings and a Dart string file.
 
-###Features:
+##Features:
 
 * Turns value-<language id>/strings.xml into <language id>.lproj/String.strings
 * Creates turns Android strings into a Dart class structure
@@ -10,7 +10,7 @@ StringCheese is a simple string translator that turns Android's strings.xml file
 * For iOS it creates a key class in Swift
 * Both Dart and Swift key classes have string formatting methods with arguments. (ex: stringCheese.someFormattedTranslatedString("arg1","arg2"))
 * Good defaults
-###Quick use:
+##Quick use:
 ./StringCheese -a <PATH_TO_ANDROID_RES_FOLDER> -i <PATH_TO_ROOT_OF_XCODE_PROJECT>
 
 ./StringCheese -a <PATH_TO_ANDROID_RES_FOLDER> -dart <PATH_TO_DART_PROJECT>
@@ -21,14 +21,14 @@ StringCheese is a simple string translator that turns Android's strings.xml file
 
 -dart is required if you want to output to Dart
 
-###Todo:
+##Todo:
 
 * Increase tests
 * Clean up code
 * Clean up README
 * Consider extending translation to and from XML, CSV, or a spreadsheet. This should be pretty simple
 
-###Argument Bucket List
+##Argument Bucket List
   -a string
         REQUIRED
         Path to your Android res folder.
