@@ -8,7 +8,7 @@ import (
 /*
 	Writes the Dart StringCheese api for a given StringKey struct
  */
-func WriteDartFiles(rootValue *StringKeys, values []*StringKeys, config *StringCheeseConfig) error {
+func writeDartFiles(rootValue *StringKeys, values []*StringKeys, config *StringCheeseConfig) error {
 	pathToDartFolder := config.pathToDartFile + "/" + strings.ToLower(config.className)
 
 	err := os.RemoveAll(pathToDartFolder) //skipped err check
@@ -81,14 +81,14 @@ func writeAbstractDartClass(rootValue *StringKeys, values []*StringKeys, config 
 
 	for _, value := range valueMap {
 		if value.translatable == false {
-			file.WriteString("	final String " + DartTransformKeyToDartVarName(value.originalKey) +" = " +
+			file.WriteString("	final String " + dartTransformKeyToDartVarName(value.originalKey) +" = " +
 				"\"" + value.value + "\";\n")
 		} else if useArgs && value.numberOfArguments > 0 {
-			file.WriteString("	String " + DartTransformKeyToDartVarName(value.originalKey) +"(" +
+			file.WriteString("	String " + dartTransformKeyToDartVarName(value.originalKey) +"(" +
 				value.argumentString + ");\n")
 
 		} else {
-			file.WriteString("	String get " + DartTransformKeyToDartVarName(value.originalKey) +";\n")
+			file.WriteString("	String get " + dartTransformKeyToDartVarName(value.originalKey) +";\n")
 		}
 	}
 
@@ -123,14 +123,14 @@ func writeOutSpecificDartFile(value *StringKeys, config *StringCheeseConfig) err
 		} else if useArgs && value.numberOfArguments > 0 {
 
 			file.WriteString("	@override\n" +
-				"	String " + DartTransformKeyToDartVarName(value.originalKey) +"(" +
+				"	String " + dartTransformKeyToDartVarName(value.originalKey) +"(" +
 				value.argumentString + ") {\n" +
 				"		return \"" + value.formatString + "\";\n" +
 				"	}\n" )
 
 		} else {
 			file.WriteString("	@override\n" +
-				"	String get " + DartTransformKeyToDartVarName(value.originalKey) +" => \"" + value.value + "\";\n")
+				"	String get " + dartTransformKeyToDartVarName(value.originalKey) +" => \"" + value.value + "\";\n")
 		}
 
 	}

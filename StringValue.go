@@ -35,7 +35,7 @@ type StringKeys struct {
 	It adds a blank StringValue for every missing key
 	If logMissingStrings is true, it logs this to console
  */
-func (sk *StringKeys) CompareAndAddValues(skipUntranslatableStrings bool, other *StringKeys, config *StringCheeseConfig) {
+func (sk *StringKeys) compareAndAddValues(skipUntranslatableStrings bool, other *StringKeys, config *StringCheeseConfig) {
 	for otherKey, otherValue := range other.strings {
 		if skipUntranslatableStrings && otherValue.translatable == false {
 			continue
@@ -64,7 +64,7 @@ func (sk *StringKeys) CompareAndAddValues(skipUntranslatableStrings bool, other 
 Reduce keys by just turning them into an int
 eventually you could reduce the keys even further by using a-z A-Z 0-9, but I don't see the point
  */
-func (sk *StringKeys) ReduceKeys() {
+func (sk *StringKeys) reduceKeys() {
 	var oldKeys = sk.strings
 	sk.strings = map[string]*StringValue{}
 
@@ -81,7 +81,7 @@ func (sk *StringKeys) ReduceKeys() {
 Coppies keys based off the original key value.
 skipped non-translated strings
  */
-func (sk *StringKeys) CopyKeys(other *StringKeys) {
+func (sk *StringKeys) copyKeys(other *StringKeys) {
 	for key, value := range other.strings {
 		if value.translatable == false {
 			continue

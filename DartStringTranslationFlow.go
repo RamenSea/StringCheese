@@ -14,20 +14,20 @@ import (
 func translateAndroidStringsToDart(config *StringCheeseConfig) error {
 
 	//	1. Get root string file
-	rootStringValue, err := GetStringKeysFromXML(config.rootLanguageId, config, DartPlatformStringValueProcessor)
+	rootStringValue, err := GetStringKeysFromXML(config.rootLanguageId, config, dartPlatformStringValueProcessor)
 	if rootStringValue == nil {
 		return errors.New("Error loading the root string value")
 		//exit
 	}
 	//2. Get the rest of the string files
-	ids, err := config.GetAllValueFoldersLanguageIds()
+	ids, err := config.getAllValueFoldersLanguageIds()
 	if err != nil {
 		return err
 		//exit
 	}
 	stringValues := []*StringKeys{}
 	for _,id := range ids {
-		sv, err := GetStringKeysFromXML(id, config, DartPlatformStringValueProcessor)
+		sv, err := GetStringKeysFromXML(id, config, dartPlatformStringValueProcessor)
 		if err != nil {
 			return err
 			//exit
@@ -40,23 +40,23 @@ func translateAndroidStringsToDart(config *StringCheeseConfig) error {
 
 	//adds missing strings keys to root value
 	for _, value := range stringValues {
-		rootStringValue.CompareAndAddValues(false, value, config)
+		rootStringValue.compareAndAddValues(false, value, config)
 	}
 	//adds missing string keys to all of the string values from root value
 	for _, value := range stringValues {
-		value.CompareAndAddValues(true, rootStringValue, config)
+		value.compareAndAddValues(true, rootStringValue, config)
 	}
 
 
 	//4. Reduce if set
 	//reduce keys if option is set
 	if config.reduceKeys {
-		rootStringValue.ReduceKeys()
+		rootStringValue.reduceKeys()
 		for _, value := range stringValues {
-			value.CopyKeys(rootStringValue)
+			value.copyKeys(rootStringValue)
 		}
 	}
 
 	//5. Generate Dart file
-	return WriteDartFiles(rootStringValue, stringValues, config)
+	return writeDartFiles(rootStringValue, stringValues, config)
 }

@@ -9,7 +9,7 @@ import (
 /*
 	Used to transform a key of a strings.xml to an idiomatic Swift var name
  */
-func SwiftTransformKeyToSwiftVarName(key string) string {
+func swiftTransformKeyToSwiftVarName(key string) string {
 	reg, _ := regexp.Compile(`(_).`)
 	workingKey := reg.ReplaceAllStringFunc(key, func(rKey string) string {
 		return strings.ToUpper(rKey)
@@ -19,7 +19,7 @@ func SwiftTransformKeyToSwiftVarName(key string) string {
 /*
 	Writes the Swift StringKey api for a given StringKey struct
  */
-func WriteSwiftKeyFile(value *StringKeys, config *StringCheeseConfig) error {
+func writeSwiftKeyFile(value *StringKeys, config *StringCheeseConfig) error {
 	pathToSwiftKey := config.pathToIOSProject + config.pathToSwiftKey + "/" + config.className + ".swift"
 	_ = os.Remove(pathToSwiftKey) //skipped err check
 	file, err := os.Create(pathToSwiftKey)
@@ -54,22 +54,22 @@ func WriteSwiftKeyFile(value *StringKeys, config *StringCheeseConfig) error {
 
 	for _, value := range valueMap {
 		if value.translatable == false {
-			file.WriteString("	let " + SwiftTransformKeyToSwiftVarName(value.originalKey) +": String = " +
+			file.WriteString("	let " + swiftTransformKeyToSwiftVarName(value.originalKey) +": String = " +
 				"\"" + value.value + "\"\n")
 		} else if writeArgSwiftFuncs && value.numberOfArguments > 0 {
 			//I added the raw string just incase
-			file.WriteString("	var raw_" + SwiftTransformKeyToSwiftVarName(value.originalKey) +": String {\n" +
+			file.WriteString("	var raw_" + swiftTransformKeyToSwiftVarName(value.originalKey) +": String {\n" +
 				"		return localize(\"" + value.key + "\")\n" +
 				"	}\n")
 
-			file.WriteString("	func " + SwiftTransformKeyToSwiftVarName(value.originalKey) +"(" +
+			file.WriteString("	func " + swiftTransformKeyToSwiftVarName(value.originalKey) +"(" +
 				value.argumentString + ") -> String {\n" +
 				"		let s = localize(\"" + value.key +  "\")\n" +
 				"		return String(format: s, " + value.formatString + ")\n" +
 				"	}\n" )
 
 		} else {
-			file.WriteString("	var " + SwiftTransformKeyToSwiftVarName(value.originalKey) +": String {\n" +
+			file.WriteString("	var " + swiftTransformKeyToSwiftVarName(value.originalKey) +": String {\n" +
 				"		return localize(\"" + value.key + "\")\n" +
 				"	}\n")
 		}

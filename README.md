@@ -35,7 +35,15 @@ well as provide methods to handle formatted strings.
 * Add more argument types (currently only strings are supported)
 * Pull strings from all xml files in a values folder rather than just one
 * Extend translation to and from XML, CSV, or a spreadsheet. This should be pretty simple.
+* Make it plugable 
 * Increase tests
+
+### How to embed in another Go project:
+
+1. Run `go get github.com/RamenSea/StringCheese`
+2. Import StringCheese into your project
+3. Create a StringCheese config struct `StringCheeseConfig`
+4. Run the `RunStringCheese` function
 
 ### Argument Bucket List
 

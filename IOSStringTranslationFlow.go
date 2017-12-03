@@ -20,7 +20,7 @@ func translateAndroidStringsToIOS(config *StringCheeseConfig) error {
 		//exit
 	}
 	//2. Get the rest of the string files
-	ids, err := config.GetAllValueFoldersLanguageIds()
+	ids, err := config.getAllValueFoldersLanguageIds()
 	if err != nil {
 		return err
 		//exit
@@ -40,23 +40,23 @@ func translateAndroidStringsToIOS(config *StringCheeseConfig) error {
 
 	//adds missing strings keys to root value
 	for _, value := range stringValues {
-		rootStringValue.CompareAndAddValues(false, value, config)
+		rootStringValue.compareAndAddValues(false, value, config)
 	}
 	//adds missing string keys to all of the string values from root value
 	for _, value := range stringValues {
-		value.CompareAndAddValues(true, rootStringValue, config)
+		value.compareAndAddValues(true, rootStringValue, config)
 	}
 
 	//	4. Generate Swift file if needed
 	if config.shouldCreateSwiftKey {
 		//	5. Reduce keys if need, but only if a Swift file is needed
 		if config.reduceKeys{
-			rootStringValue.ReduceKeys()
+			rootStringValue.reduceKeys()
 			for _, value := range stringValues {
-				value.CopyKeys(rootStringValue)
+				value.copyKeys(rootStringValue)
 			}
 		}
-		WriteSwiftKeyFile(rootStringValue, config)
+		writeSwiftKeyFile(rootStringValue, config)
 	}
 
 	//	6. Generate .strings files

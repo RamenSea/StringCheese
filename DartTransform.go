@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func DartTransformKeyToDartVarName(key string) string {
+func dartTransformKeyToDartVarName(key string) string {
 	reg, _ := regexp.Compile(`(_).`)
 	workingKey := reg.ReplaceAllStringFunc(key, func(rKey string) string {
 		return strings.ToUpper(rKey)

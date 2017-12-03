@@ -189,7 +189,7 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 }
 
 //Gets the path to the where the language's .strings file should be located
-func (config *StringCheeseConfig) DotStringFileWithLanguageId(languageId string) string {
+func (config *StringCheeseConfig) dotStringFileWithLanguageId(languageId string) string {
 	if languageId == LANGUAGE_ID_NONE {
 		return config.pathToIOSProject + "/Base.lproj/" + config.nameOfDotStringFile + ".strings"
 	}
@@ -197,7 +197,7 @@ func (config *StringCheeseConfig) DotStringFileWithLanguageId(languageId string)
 }
 
 //gets all the language IDs from an Android projects res folder
-func (config *StringCheeseConfig) GetAllValueFoldersLanguageIds() ([]string, error) {
+func (config *StringCheeseConfig) getAllValueFoldersLanguageIds() ([]string, error) {
 	languageIds := []string{}
 	res, err := os.Open(config.pathToAndroidRes)
 	if err != nil {

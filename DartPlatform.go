@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func DartPlatformStringValueProcessor(value string, argNames string, sv *StringValue)  {
+func dartPlatformStringValueProcessor(value string, argNames string, sv *StringValue)  {
 	usingValue := value
 
 	//%1$s

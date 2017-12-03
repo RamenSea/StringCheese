@@ -8,10 +8,10 @@ import (
 )
 
 func writeStringValueToDotStrings(value *StringKeys, config *StringCheeseConfig) error {
-	folderPathToDotString := config.DotStringFileWithLanguageId(value.languageId)
+	folderPathToDotString := config.dotStringFileWithLanguageId(value.languageId)
 	_ = os.MkdirAll(folderPathToDotString, os.ModePerm) //skipped err check
 
-	pathToDotString := config.DotStringFileWithLanguageId(value.languageId)
+	pathToDotString := config.dotStringFileWithLanguageId(value.languageId)
 	//remove old string file
 	_ = os.Remove(pathToDotString) //skipped err check
 	file, err := os.Create(pathToDotString)
