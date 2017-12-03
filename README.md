@@ -43,7 +43,7 @@ It also generates a key class to help implementing the strings in your applicati
 Arguments for pointing to projects
 
 | Arg | Type    | Required   | Description  | Defaults |
-| --- | ------- | ---------- | ------------ | -------- |
+| -------------- | ------- | ---------- | ------------ | ----------- |
 | a   | string  | yes          | Path to your Android res folder.  | none |
 | i   | string  | yes(for ios) | Root folder of your iOS project. This is where the .strings files will be created.  | none |
 | dart | string  | yes(for dart) | This is where the Dart StringCheese classes will be generated  | none |
@@ -51,7 +51,7 @@ Arguments for pointing to projects
 Arguments for generating the translations
 
 | Arg | Type    | Required   | Description  | Defaults |
-| --- | ------- | ---------- | ------------ | -------- |
+| -------------- | ------- | ---------- | ------------ | ----------- |
 | lang | string  | no | Id of language to use as the base string xml file. For example en if you want the file 'values-en/strings.xml' to be used as the root language. If left blank the default folder will be values/strings.xml.  | none |
 | langId | string  | no | Id of language to use as the base id for -lang if none is specified. This value will be overwritten by -lang. For right now this is only used with Dart.  | en |
 | className | string  | no | The class name of the key file that will be generated  | StringCheese |
@@ -65,7 +65,7 @@ Arguments for generating the translations
 iOS specific arguments
 
 | Arg | Type    | Required   | Description  | Defaults |
-| --- | ------- | ---------- | ------------ | -------- |
+| -------------- | ------- | ---------- | ------------ | ----------- |
 | dotName   | string  | no | Name of the .strings file.  | String |
 | swift   | boolean  | no | If a swift key file should be generated.  | true |
 | swiftLoc | string  | no | Relative path inside the XCode project where the Swift StringCheese key class will be generated. If empty, this will generate it at the root of the project. | none |
