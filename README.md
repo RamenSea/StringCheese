@@ -1,6 +1,6 @@
 # StringCheese
 ### Overview:
-Translates Android XML strings into iOS and Dart string, with some added high quality sugar if you want.
+Translates Android XML strings into iOS and Dart strings, comes with some high quality sugar if desired.
 The key class StringCheese generates will handle referencing to the platforms own localization methods as 
 well as provide methods to handle formatted strings.
 
