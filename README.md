@@ -3,14 +3,6 @@
 StringCheese is a simple string translator that turns Android's strings.xml files into iOS' .strings and a Dart string file. 
 It also generates a key class to help implementing the strings in your application.
 
-### Features:
-
-* Turns value-<language id>/strings.xml into <language id>.lproj/String.strings
-* Creates turns Android strings into a Dart class structure
-* Written in an extendable way to make it easy to add new targets in the future
-* For iOS it creates a key class in Swift
-* Both Dart and Swift key classes have string formatting methods with arguments. (ex: `stringCheese.someKeyWithFormats("arg1","arg2")`)
-* Good defaults
 ### Quick use:
 
 1. Run StringCheese.
@@ -27,6 +19,16 @@ It also generates a key class to help implementing the strings in your applicati
 
 2. If this is the first time running the program add the files to your XCode or Dart project.
 3. Import and create the StringCheese class
+
+### Features:
+
+* Turns value-<language id>/strings.xml into <language id>.lproj/String.strings
+* Creates turns Android strings into a Dart class structure
+* Written in an extendable way to make it easy to add new targets in the future
+* For iOS it creates a key class in Swift
+* Both Dart and Swift key classes have string formatting methods with arguments. (ex: `stringCheese.someKeyWithFormats("arg1","arg2")`)
+* Good defaults
+
 ### Todo:
 
 * Increase tests
@@ -35,6 +37,18 @@ It also generates a key class to help implementing the strings in your applicati
 * Consider extending translation to and from XML, CSV, or a spreadsheet. This should be pretty simple
 
 ### Argument Bucket List
+
+
+| Arg | Type    | Required  | Description  |
+| --- | ------- | --------- | ------------ |
+| a   | string  | y         |           d  |
+| i   | string  | y         |           d  |
+| a   | string  | y         |           d  |
+| a   | string  | y         |           d  |
+| a   | string  | y         |           d  |
+| a   | string  | y         |           d  |
+
+
   -a string
         REQUIRED
         Path to your Android res folder.

@@ -5,6 +5,7 @@ import (
 )
 /*
 todo
+1. Test and upload binary
 2. Handle different types of string arguments other than just strings
  */
 
