@@ -40,32 +40,32 @@ It also generates a key class to help implementing the strings in your applicati
 
 `./StringCheese -h` for similar information
 
-Arguments for pointing to projects
+Arguments for pointing to projects. Pointing to an Android project is required.
 
-| Arg | Type    | Required   | Description  | Defaults |
-| -------------- | ------- | ---------- | ------------ | ----------- |
-| a   | string  | yes          | Path to your Android res folder.  | none |
-| i   | string  | yes(for ios) | Root folder of your iOS project. This is where the .strings files will be created.  | none |
-| dart | string  | yes(for dart) | This is where the Dart StringCheese classes will be generated  | none |
+| Arg | Type    | Description  |
+| -------------- | ---------- | ------------ |
+| a   | string | Path to your Android res folder.  |
+| i   | string | Root folder of your iOS project. This is where the .strings files will be created.  |
+| dart | string | This is where the Dart StringCheese classes will be generated  | 
 
 Arguments for generating the translations
 
-| Arg | Type    | Required   | Description  | Defaults |
-| -------------- | ------- | ---------- | ------------ | ----------- |
-| lang | string  | no | Id of language to use as the base string xml file. For example en if you want the file 'values-en/strings.xml' to be used as the root language. If left blank the default folder will be values/strings.xml.  | none |
-| langId | string  | no | Id of language to use as the base id for -lang if none is specified. This value will be overwritten by -lang. For right now this is only used with Dart.  | en |
-| className | string  | no | The class name of the key file that will be generated  | StringCheese |
-| logMissing | boolean  | no | Logs to the console if there are any missing strings in your strings.xml files  | true |
-| reduce | boolean  | no | Reduces keys in outputted key classes. | true |
-| s_xml | string  | no | Name of your xml file containing strings. | strings |
-| static | boolean  | no | If the generated key file is static. | false |
-| useArgs | boolean  | no | If the key class generated generates a special argument method for strings with format points. | true |
-| useValidLangId | boolean  | no | Skips a values-LANGUAGE_ID folder if the id is not valid | true |
+| Arg | Type    | Description  | Defaults |
+| -------------- | ---------- | ------------ | ----------- |
+| lang | string | Id of language to use as the base string xml file. For example en if you want the file 'values-en/strings.xml' to be used as the root language. If left blank the default folder will be values/strings.xml.  | none |
+| langId | string| Id of language to use as the base id for -lang if none is specified. This value will be overwritten by -lang. For right now this is only used with Dart.  | en |
+| className | string | The class name of the key file that will be generated  | StringCheese |
+| logMissing | boolean | Logs to the console if there are any missing strings in your strings.xml files  | true |
+| reduce | boolean | Reduces keys in outputted key classes. | true |
+| s_xml | string | Name of your xml file containing strings. | strings |
+| static | boolean | If the generated key file is static. | false |
+| useArgs | boolean | If the key class generated generates a special argument method for strings with format points. | true |
+| useValidLangId | boolean | Skips a values-LANGUAGE_ID folder if the id is not valid | true |
 
 iOS specific arguments
 
-| Arg | Type    | Required   | Description  | Defaults |
-| -------------- | ------- | ---------- | ------------ | ----------- |
-| dotName   | string  | no | Name of the .strings file.  | String |
-| swift   | boolean  | no | If a swift key file should be generated.  | true |
-| swiftLoc | string  | no | Relative path inside the XCode project where the Swift StringCheese key class will be generated. If empty, this will generate it at the root of the project. | none |
+| Arg | Type    | Description  | Defaults |
+| -------------- | ---------- | ------------ | ----------- |
+| dotName   | string | Name of the .strings file.  | String |
+| swift   | boolean | If a swift key file should be generated.  | true |
+| swiftLoc | string | Relative path inside the XCode project where the Swift StringCheese key class will be generated. If empty, this will generate it at the root of the project. | none |
