@@ -32,10 +32,10 @@ well as provide methods to handle formatted strings.
 
 ### Todo:
 
+* Add more argument types (currently only strings are supported)
+* Pull strings from all xml files in a values folder rather than just one
+* Extend translation to and from XML, CSV, or a spreadsheet. This should be pretty simple.
 * Increase tests
-* Clean up code
-* Clean up README
-* Consider extending translation to and from XML, CSV, or a spreadsheet. This should be pretty simple
 
 ### Argument Bucket List
 
