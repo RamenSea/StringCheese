@@ -34,6 +34,16 @@ func writeJSFileHeader(file *os.File, rootValue *StringKeys, values []*StringKey
 		"\n" +
 		"//Generated String Cheese JS file" +
 		"\n" +
+		"/**\n" +
+		" * Returns a localized set of strings.\n" +
+		" * @param {string} languageShortName - A short language id (ex: 'en').\n" +
+		" * @returns {")
+	for _, value := range values {
+		file.WriteString(getJSClassName(value,config)+"|")
+	}
+	file.WriteString("}\n"+
+		" * @default returns {"+getJSClassName(rootValue,config)+"}\n" +
+		" */\n" +
 		"function CreateStringCheeseWithLanguageShort(languageShortName) {\n" +
 		"    switch(languageShortName) {\n")
 	for _, value := range values {
