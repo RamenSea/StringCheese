@@ -1,20 +1,17 @@
 package main
 
-import (
-	"errors"
-)
+import "errors"
 
 /*
 	1. Get root string file
 	2. Get the rest of the string files
 	3. Clean this up and look for missing keys
-	4. Reduce if set
-	5. Generate Dart file
+	4. Generate JavaScript file
  */
-func translateAndroidStringsToDart(config *StringCheeseConfig) error {
+func translateStringsToJavaScript(config *StringCheeseConfig) error {
 
 	//	1. Get root string file
-	rootStringValue, err := getStringKeys(config.rootLanguageId, config, dartPlatformStringValueProcessor)
+	rootStringValue, err := getStringKeys(config.rootLanguageId, config, jsPlatformStringValueProcessor)
 	if rootStringValue == nil {
 		return errors.New("Error loading the root string value")
 		//exit
@@ -25,9 +22,10 @@ func translateAndroidStringsToDart(config *StringCheeseConfig) error {
 		return err
 		//exit
 	}
+
 	stringValues := []*StringKeys{}
 	for _,id := range ids {
-		sv, err := getStringKeys(id, config, dartPlatformStringValueProcessor)
+		sv, err := getStringKeys(id, config, jsPlatformStringValueProcessor)
 		if err != nil {
 			return err
 			//exit
@@ -48,15 +46,6 @@ func translateAndroidStringsToDart(config *StringCheeseConfig) error {
 	}
 
 
-	//4. Reduce if set
-	//reduce keys if option is set
-	if config.reduceKeys {
-		rootStringValue.reduceKeys()
-		for _, value := range stringValues {
-			value.copyKeys(rootStringValue)
-		}
-	}
-
-	//5. Generate Dart file
-	return writeDartFiles(rootStringValue, stringValues, config)
+	//4. Generate JavaScript file
+	return writeJSFiles(rootStringValue, stringValues, config)
 }

@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 	"time"
+	"sort"
 )
 
 /*
@@ -18,9 +19,15 @@ import (
 const LANGUAGE_ID_NONE = "ROOT"
 const LANGUAGE_ID_NONE_NAME = "en"
 
+//Base translation files
+const CONFIG_ARG_SPREAD_SHEET_PATH = "s"
+const MESSAGE_SPREAD_SHEET_PATH = "REQUIRED (if no -a)\n" +
+	"        Path to your spread sheet folder.\n" +
+	"        Ex: /Users/me/workspace/project/translation/spreadsheets/\n"
+
 //Android related
 const CONFIG_ARG_ANDROID_RES = "a" //REQUIRED
-const MESSAGE_ANDROID_RES = "REQUIRED\n" +
+const MESSAGE_ANDROID_RES = "REQUIRED (if no -s)\n" +
 	"        Path to your Android res folder.\n" +
 	"        Ex: /Users/me/workspace/project/android/project_name/app/src/main/res\n"
 
@@ -70,11 +77,17 @@ const MESSAGE_PATH_TO_SWIFT_FILE = "Optional\n" +
 const DEFAULT_VALUE_PATH_TO_SWIFT_FILE = "" //this is relative to XCODE_PROJECT
 
 
-
 //Dart related
 const CONFIG_ARG_PATH_TO_DART_PROJECT = "dart" //Optional
 const MESSAGE_PATH_TO_DART_PROJECT = "Optional, REQUIRED to output to Dart\n" +
 	"        Root folder of your Dart project. This is where the Dart StringCheese classes will be generated\n"
+
+
+//Javascript related
+const CONFIG_ARG_PATH_TO_JS_PROJECT = "js" //Optional
+const MESSAGE_PATH_TO_JS_PROJECT = "Optional, REQUIRED to output to JavaScript\n" +
+	"        Where the JavaScript files will be generated.\n" +
+	"        Generates ES6 compatible JS.\n"
 
 
 //general
@@ -117,16 +130,24 @@ const NO_VALUE_FROM_FLAG = "NONE"
 func parseAndGetConfig() (*StringCheeseConfig, error) {
 
 	//android related
+	pathSpreadSheet := flag.String(CONFIG_ARG_SPREAD_SHEET_PATH, NO_VALUE_FROM_FLAG, MESSAGE_SPREAD_SHEET_PATH)
+
 	pathToAndroidRes := flag.String(CONFIG_ARG_ANDROID_RES, NO_VALUE_FROM_FLAG, MESSAGE_ANDROID_RES)
 	nameOfXMLFile := flag.String(CONFIG_ARG_NAME_OF_STRING_XML_FILE, DEFAULT_VALUE_NAME_OF_STRING_XML_FILE, MESSAGE_NAME_OF_STRING_XML_FILE)
+
 	//ios
 	iOSProjectRoot := flag.String(CONFIG_ARG_XCODE_PROJECT, NO_VALUE_FROM_FLAG, MESSAGE_XCODE_PROJECT)
 	nameOfDotStrings := flag.String(CONFIG_ARG_NAME_OF_XCODE_DOT_STRING_FILE, DEFAULT_VALUE_NAME_OF_XCODE_DOT_STRING_FILE, MESSAGE_NAME_OF_XCODE_DOT_STRING_FILE)
 	createSwiftKey := flag.Bool(CONFIG_ARG_SHOULD_CREATE_SWIFT_KEYS, DEFAULT_VALUE_SHOULD_CREATE_SWIFT_KEYS, MESSAGE_SHOULD_CREATE_SWIFT_KEYS)
 	pathToSwift := flag.String(CONFIG_ARG_PATH_TO_SWIFT_FILE, DEFAULT_VALUE_PATH_TO_SWIFT_FILE, MESSAGE_PATH_TO_SWIFT_FILE)
 	className := flag.String(CONFIG_ARG_CLASS_NAME, DEFAULT_VALUE_CLASS_NAME, MESSAGE_CLASS_NAME)
+
 	//dart
 	dartProject := flag.String(CONFIG_ARG_PATH_TO_DART_PROJECT, NO_VALUE_FROM_FLAG, MESSAGE_PATH_TO_DART_PROJECT)
+
+	//javascript
+	javaScriptProject := flag.String(CONFIG_ARG_PATH_TO_JS_PROJECT, NO_VALUE_FROM_FLAG, MESSAGE_PATH_TO_JS_PROJECT)
+
 	//general
 	rootLanguage := flag.String(CONFIG_ARG_ROOT_LANGUAGE, DEFAULT_VALUE_ROOT_LANGUAGE, MESSAGE_ROOT_LANGUAGE)
 	rootLanguageIfIfNone := flag.String(CONFIG_ARG_ROOT_LANGUAGE_ID, DEFAULT_VALUE_ROOT_LANGUAGE_ID, MESSAGE_ROOT_LANGUAGE_ID)
@@ -138,28 +159,32 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 
 	flag.Parse()
 
-	if *pathToAndroidRes == NO_VALUE_FROM_FLAG {
-		return nil, errors.New("Did not include path to your Android res folder.\n" +
+	if *pathToAndroidRes == NO_VALUE_FROM_FLAG  && *pathSpreadSheet == NO_VALUE_FROM_FLAG {
+		return nil, errors.New("Did not include path to either your android res folder or folder of spread sheets.\n" +
 			"Ex: ./StringValue -a /Users/me/workspace/androidApp/app/src/main/res")
 	}
-	if *iOSProjectRoot == NO_VALUE_FROM_FLAG && *dartProject == NO_VALUE_FROM_FLAG {
-		return nil, errors.New("Did not include path to an iOS or Dart project folder.\n" +
+	if *iOSProjectRoot == NO_VALUE_FROM_FLAG && *dartProject == NO_VALUE_FROM_FLAG && *javaScriptProject == NO_VALUE_FROM_FLAG {
+		return nil, errors.New("Did not include path to an iOS, JS, or Dart project folder.\n" +
 			"Ex: ./StringValue -a /Users/me/workspace/iOSAPP/iOSAPP")
 	}
 
 	var usingRootLanguageId = rootLanguageIfIfNone
-	if (*rootLanguage == LANGUAGE_ID_NONE) {
-		usingRootLanguageId = rootLanguage
-	}
+	//if (*rootLanguage == LANGUAGE_ID_NONE) {
+	//	usingRootLanguageId = rootLanguage
+	//}
 	//if *defaultLang == NO_VALUE_FROM_FLAG {
 	//	*defaultLang = DEFAULT_LANGUAGE_ID
 	//}
 
-	timeStamp := "// Last generated at: " + time.Now().String() + "\n"
+	timeStamp := "// Last generated at: " + time.Now().UTC().String() + "\n"
 	config := StringCheeseConfig{
 		timeStampString: timeStamp,
 		rootLanguageId: *rootLanguage,
 		rootLanguageIdToUse: *usingRootLanguageId,
+
+		//spreadsheet
+		pathToSpreadSheetFolder: *pathSpreadSheet,
+		shouldUseSpreadSheetForStrings: *pathSpreadSheet != NO_VALUE_FROM_FLAG,
 
 		//android
 		pathToAndroidRes: *pathToAndroidRes,
@@ -173,8 +198,12 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 		pathToSwiftKey: *pathToSwift,
 
 		//dart
-		translatingToDart: *dartProject == NO_VALUE_FROM_FLAG,
+		translatingToDart: *dartProject != NO_VALUE_FROM_FLAG,
 		pathToDartFile: *dartProject,
+
+		//JS
+		translatingToJS: *javaScriptProject != NO_VALUE_FROM_FLAG,
+		pathToJSFolder: *javaScriptProject,
 
 		//general
 		className: *className,
@@ -195,27 +224,47 @@ func (config *StringCheeseConfig) dotStringFileWithLanguageId(languageId string)
 	}
 	return config.pathToIOSProject + "/" + strings.Title(languageId) + ".lproj/" + config.nameOfDotStringFile + ".strings"
 }
-
-//gets all the language IDs from an Android projects res folder
+//gets all the language IDs for a translation
 func (config *StringCheeseConfig) getAllValueFoldersLanguageIds() ([]string, error) {
 	languageIds := []string{}
-	res, err := os.Open(config.pathToAndroidRes)
-	if err != nil {
-		return nil, err
-	}
-	fileNames, err := res.Readdirnames(0)
+	if config.shouldUseSpreadSheetForStrings {
+		res, err := os.Open(config.pathToSpreadSheetFolder)
+		if err != nil {
+			return nil, err
+		}
+		fileNames, err := res.Readdirnames(0)
 
-	for _, name := range fileNames {
-		if strings.Contains(name, "values") {
-			s := strings.Split(name, "-")
-			if len(s) > 1 {
-				langId := s[1]
-				if CheckIfValidLanguageCode(langId) || !config.skipNonValidLanguageIds {
-					languageIds = append(languageIds, s[1])
+		for _, name := range fileNames {
+			if strings.Contains(name, "_sheet") {
+				s := strings.Split(name, "_")
+				if len(s) > 0 {
+					langId := s[0]
+					if CheckIfValidLanguageCode(langId) || !config.skipNonValidLanguageIds {
+						languageIds = append(languageIds, s[0])
+					}
+				}
+			}
+		}
+	} else {
+		res, err := os.Open(config.pathToAndroidRes)
+		if err != nil {
+			return nil, err
+		}
+		fileNames, err := res.Readdirnames(0)
+
+		for _, name := range fileNames {
+			if strings.Contains(name, "values") {
+				s := strings.Split(name, "-")
+				if len(s) > 1 {
+					langId := s[1]
+					if CheckIfValidLanguageCode(langId) || !config.skipNonValidLanguageIds {
+						languageIds = append(languageIds, s[1])
+					}
 				}
 			}
 		}
 	}
+	sort.Strings(languageIds)
 	return languageIds, nil
 }
 
@@ -227,6 +276,10 @@ type StringCheeseConfig struct {
 	timeStampString string
 	rootLanguageId string
 	rootLanguageIdToUse string
+
+	//spreadsheets
+	pathToSpreadSheetFolder string
+	shouldUseSpreadSheetForStrings bool
 
 	//android
 	pathToAndroidRes string
@@ -242,6 +295,10 @@ type StringCheeseConfig struct {
 	//dart
 	translatingToDart bool
 	pathToDartFile string
+
+	//dart
+	translatingToJS bool
+	pathToJSFolder string
 
 	//general
 	className string

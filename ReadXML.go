@@ -5,6 +5,8 @@ import (
 	"encoding/xml"
 )
 
+
+
 //Valid Language Codes
 var validLanguageCodes = []string{"en", "aa", "ab", "af", "am", "ar", "as", "ay", "az", "ba", "be", "bg", "bh", "bi",
 	"bn", "bo", "br", "ca", "co", "cs", "cy", "da", "de", "dz", "el", "eo", "es", "et", "eu", "fa", "fi", "fj", "fo", "fr",
@@ -52,7 +54,7 @@ func GetStringKeysFromXML(languageId string, config *StringCheeseConfig,  platfo
 	values := StringKeys{languageId: languageId, strings: map[string]*StringValue{}}
 	xmlStringValue := res.Strings
 	for _, value := range xmlStringValue {
-		values.strings[value.Name] = CreateStringValue(value, config, platformProcessor)
+		values.strings[value.Name] = CreateStringValue(value.Translatable == "false", value.Name, value.Value, value.ArgNames, config, platformProcessor)
 	}
 
 	fileReader.Close()
@@ -68,8 +70,8 @@ func CheckIfValidLanguageCode(languageCode string) bool {
 }
 
 
-func CreateStringValue(value XMLStringValue, config *StringCheeseConfig, platformProcessor func(value string, argNames string, sv *StringValue)) *StringValue {
-	s := StringValue{value.Translatable != "false",value.Name, value.Name, "",  0, "", ""}
-	platformProcessor(value.Value, value.ArgNames, &s)
+func CreateStringValue(isTranslatable bool, key string, value string, argNames string, config *StringCheeseConfig, platformProcessor func(value string, argNames string, sv *StringValue)) *StringValue {
+	s := StringValue{isTranslatable,key, key, "",  0, "", ""}
+	platformProcessor(value, argNames, &s)
 	return &s
 }

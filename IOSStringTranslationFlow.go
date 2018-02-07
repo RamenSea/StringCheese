@@ -14,7 +14,7 @@ import (
  */
 func translateAndroidStringsToIOS(config *StringCheeseConfig) error {
 	//	1. Get root string file
-	rootStringValue, err := GetStringKeysFromXML(config.rootLanguageId, config, iOSPlatformStringValueProcessor)
+	rootStringValue, err := getStringKeys(config.rootLanguageId, config, iOSPlatformStringValueProcessor)
 	if rootStringValue == nil {
 		return errors.New("Error loading the root string value")
 		//exit
@@ -27,7 +27,7 @@ func translateAndroidStringsToIOS(config *StringCheeseConfig) error {
 	}
 	stringValues := []*StringKeys{}
 	for _,id := range ids {
-		sv, err := GetStringKeysFromXML(id, config, iOSPlatformStringValueProcessor)
+		sv, err := getStringKeys(id, config, iOSPlatformStringValueProcessor)
 		if err != nil {
 			return err
 			//exit

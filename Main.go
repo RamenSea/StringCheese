@@ -21,6 +21,7 @@ func main() {
 func RunStringCheese(config *StringCheeseConfig) error {
 	var err error
 	if config.translatingToIOS {
+		fmt.Println("Starting iOS translation")
 		err = translateAndroidStringsToIOS(config)
 		if err == nil {
 			fmt.Println("Success!")
@@ -32,10 +33,22 @@ func RunStringCheese(config *StringCheeseConfig) error {
 	}
 
 	if config.translatingToDart {
+		fmt.Println("Starting Dart translation")
 		err = translateAndroidStringsToDart(config)
 		if err == nil {
 			fmt.Println("Success")
 			fmt.Println("Make sure to add all generated files to your Dart project")
+		} else {
+			return err
+		}
+	}
+
+	if config.translatingToJS {
+		fmt.Println("Starting JS translation")
+		err = translateStringsToJavaScript(config)
+		if err == nil {
+			fmt.Println("Success")
+			fmt.Println("Make sure to add all generated files to your JS project")
 		} else {
 			return err
 		}
