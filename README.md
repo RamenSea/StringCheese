@@ -38,7 +38,6 @@ This key class will also provide helper functions to create formatted strings.
 
 * Add more argument types (currently only strings are supported)
 * Pull strings from all xml files in a values folder rather than just one
-* Extend translation to and from XML, CSV, or a spreadsheet. This should be pretty simple.
 * Increase tests
 
 ### How to embed in another Go project:
