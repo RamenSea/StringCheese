@@ -28,6 +28,21 @@ func RunStringCheese(config *StringCheeseConfig) error {
 			fmt.Println("Make sure to add all generated files to your XCode project.")
 			fmt.Println("Otherwise your XCode project will not see the newly generated files.")
 		} else {
+			fmt.Println("String cheese failed")
+			fmt.Println("Error: ")
+			return err
+		}
+	}
+
+	if config.translatingToKotlin {
+		fmt.Println("Starting Kotlin translation")
+		err = translateStringsToKotlinMap(config)
+		if err == nil {
+			fmt.Println("Success")
+			fmt.Println("Make sure to add all generated files to your Kotlin project")
+		} else {
+			fmt.Println("String cheese failed")
+			fmt.Println("Error: ")
 			return err
 		}
 	}
@@ -39,6 +54,8 @@ func RunStringCheese(config *StringCheeseConfig) error {
 			fmt.Println("Success")
 			fmt.Println("Make sure to add all generated files to your Dart project")
 		} else {
+			fmt.Println("String cheese failed")
+			fmt.Println("Error: ")
 			return err
 		}
 	}
@@ -50,6 +67,8 @@ func RunStringCheese(config *StringCheeseConfig) error {
 			fmt.Println("Success")
 			fmt.Println("Make sure to add all generated files to your JS project")
 		} else {
+			fmt.Println("String cheese failed")
+			fmt.Println("Error: ")
 			return err
 		}
 	}

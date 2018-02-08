@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func kotlinPlatformStringValueProcessor(value string, argNames string, sv *StringValue)  {
+func kotlinMapPlatformStringValueProcessor(value string, argNames string, sv *StringValue)  {
 	usingValue := value
 
 	//%1$s
@@ -33,9 +33,9 @@ func kotlinPlatformStringValueProcessor(value string, argNames string, sv *Strin
 				argName = "arg" + strconv.Itoa(i + 1)
 			}
 			if i > 0 {
-				argumentString = argumentString + ", String " + argName
+				argumentString = argumentString + ": String, " + argName
 			} else {
-				argumentString = "String " + argName
+				argumentString = ": String " + argName
 			}
 			return "$" + argName
 		})

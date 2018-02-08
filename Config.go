@@ -78,6 +78,13 @@ const DEFAULT_VALUE_PATH_TO_SWIFT_FILE = "" //this is relative to XCODE_PROJECT
 
 
 //Dart related
+const CONFIG_ARG_PATH_TO_KOTLIN_PROJECT = "km" //Optional
+const MESSAGE_PATH_TO_KOTLIN_PROJECT = "Optional, REQUIRED to output to a Kotlin Map<String, String> \n" +
+	"        Where the kotlin map class will be generated\n" +
+	"        For now it will always be apart of the org.stringcheese package\n"
+
+
+//Dart related
 const CONFIG_ARG_PATH_TO_DART_PROJECT = "dart" //Optional
 const MESSAGE_PATH_TO_DART_PROJECT = "Optional, REQUIRED to output to Dart\n" +
 	"        Root folder of your Dart project. This is where the Dart StringCheese classes will be generated\n"
@@ -142,6 +149,9 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 	pathToSwift := flag.String(CONFIG_ARG_PATH_TO_SWIFT_FILE, DEFAULT_VALUE_PATH_TO_SWIFT_FILE, MESSAGE_PATH_TO_SWIFT_FILE)
 	className := flag.String(CONFIG_ARG_CLASS_NAME, DEFAULT_VALUE_CLASS_NAME, MESSAGE_CLASS_NAME)
 
+	//kotlin
+	kotlinProject := flag.String(CONFIG_ARG_PATH_TO_KOTLIN_PROJECT, NO_VALUE_FROM_FLAG, CONFIG_ARG_PATH_TO_KOTLIN_PROJECT)
+
 	//dart
 	dartProject := flag.String(CONFIG_ARG_PATH_TO_DART_PROJECT, NO_VALUE_FROM_FLAG, MESSAGE_PATH_TO_DART_PROJECT)
 
@@ -163,8 +173,11 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 		return nil, errors.New("Did not include path to either your android res folder or folder of spread sheets.\n" +
 			"Ex: ./StringValue -a /Users/me/workspace/androidApp/app/src/main/res")
 	}
-	if *iOSProjectRoot == NO_VALUE_FROM_FLAG && *dartProject == NO_VALUE_FROM_FLAG && *javaScriptProject == NO_VALUE_FROM_FLAG {
-		return nil, errors.New("Did not include path to an iOS, JS, or Dart project folder.\n" +
+	if *iOSProjectRoot == NO_VALUE_FROM_FLAG &&
+		*dartProject == NO_VALUE_FROM_FLAG &&
+		*kotlinProject == NO_VALUE_FROM_FLAG &&
+			*javaScriptProject == NO_VALUE_FROM_FLAG {
+		return nil, errors.New("Did not include path to an iOS, Kotlin map, JS, or Dart project folder.\n" +
 			"Ex: ./StringValue -a /Users/me/workspace/iOSAPP/iOSAPP")
 	}
 
@@ -196,6 +209,10 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 		nameOfDotStringFile: *nameOfDotStrings,
 		shouldCreateSwiftKey: *createSwiftKey,
 		pathToSwiftKey: *pathToSwift,
+
+		//kotlin
+		translatingToKotlin: *kotlinProject != NO_VALUE_FROM_FLAG,
+		pathToKotlinFolder: *kotlinProject,
 
 		//dart
 		translatingToDart: *dartProject != NO_VALUE_FROM_FLAG,
@@ -291,6 +308,10 @@ type StringCheeseConfig struct {
 	nameOfDotStringFile string
 	shouldCreateSwiftKey bool
 	pathToSwiftKey string
+
+	//kotlin
+	translatingToKotlin bool
+	pathToKotlinFolder string
 
 	//dart
 	translatingToDart bool
