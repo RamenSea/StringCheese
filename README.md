@@ -1,29 +1,33 @@
 # StringCheese
 ### Overview:
-Translates Android XML strings into iOS and Dart strings, comes with some high quality sugar if desired.
-The key class StringCheese generates will handle referencing to the platforms own localization methods as 
-well as provide methods to handle formatted strings.
+Translates CSVs or Android XML Strings into iOS, Kotlin Map, Dart, and JavaScript strings. Includes quality sugar if desired.
+On some platforms StringCheese can generate a key class to provide for an auto-complete and safety layer when accessing the strings.
+This key class will also provide helper functions to create formatted strings.
 
 ### Quick use:
 
 1. Run StringCheese.
 
-    `./StringCheese -a <PATH_TO_ANDROID_RES_FOLDER> -i <PATH_TO_ROOT_OF_XCODE_PROJECT>`
+    `./StringCheese -s <PATH_TO_CSV_FOLDER> -i <PATH_TO_ROOT_OF_XCODE_PROJECT>`
 
-    `./StringCheese -a <PATH_TO_ANDROID_RES_FOLDER> -dart <PATH_TO_DART_PROJECT>`
+    `./StringCheese -s <PATH_TO_CSV_FOLDER> -dart <PATH_TO_DART_PROJECT>`
 
-    `-a` is required and should be set to your Android's res folder
+    `-s` or `-a` is required.
 
     `-i` is required if you want to output to XCode
 
     `-dart` is required if you want to output to Dart
 
-2. If this is the first time running the program add the files to your XCode or Dart project.
+    `-km` is required if you want to output to a Kotlin Map
+
+    `-js` is required if you want to output to JavaScript
+
+2. If this is the first time running the program add the files to your XCode, Kotlin, Dart, or JavaScript project.
 3. Import and create the StringCheese class
 
 ### Features:
 
-* Turns value-<language id>/strings.xml into <language id>.lproj/String.strings
+* Turns CSV spread sheets or value-<language id>/strings.xml into <language id>.lproj/String.strings
 * Creates turns Android strings into a Dart class structure
 * Written in an extendable way to make it easy to add new targets in the future
 * For iOS it creates a key class in Swift
