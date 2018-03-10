@@ -77,9 +77,16 @@ const MESSAGE_PATH_TO_SWIFT_FILE = "Optional\n" +
 const DEFAULT_VALUE_PATH_TO_SWIFT_FILE = "" //this is relative to XCODE_PROJECT
 
 
-//Dart related
-const CONFIG_ARG_PATH_TO_KOTLIN_PROJECT = "km" //Optional
-const MESSAGE_PATH_TO_KOTLIN_PROJECT = "Optional, REQUIRED to output to a Kotlin Map<String, String> \n" +
+//Kotlin Map related
+const CONFIG_ARG_PATH_TO_KOTLIN_PROJECT = "kt" //Optional
+const MESSAGE_PATH_TO_KOTLIN_PROJECT = "Optional, REQUIRED to output to a Kotlin Class \n" +
+	"        Where the kotlin class will be generated\n" +
+	"        For now it will always be apart of the org.stringcheese package\n"
+
+
+//Kotlin Map related
+const CONFIG_ARG_PATH_TO_KOTLIN_MAP_PROJECT = "km" //Optional
+const MESSAGE_PATH_TO_KOTLIN_MAP_PROJECT = "Optional, REQUIRED to output to a Kotlin Map<String, String> \n" +
 	"        Where the kotlin map class will be generated\n" +
 	"        For now it will always be apart of the org.stringcheese package\n"
 
@@ -152,6 +159,9 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 	//kotlin
 	kotlinProject := flag.String(CONFIG_ARG_PATH_TO_KOTLIN_PROJECT, NO_VALUE_FROM_FLAG, CONFIG_ARG_PATH_TO_KOTLIN_PROJECT)
 
+	//kotlin Map
+	kotlinMapProject := flag.String(CONFIG_ARG_PATH_TO_KOTLIN_MAP_PROJECT, NO_VALUE_FROM_FLAG, CONFIG_ARG_PATH_TO_KOTLIN_MAP_PROJECT)
+
 	//dart
 	dartProject := flag.String(CONFIG_ARG_PATH_TO_DART_PROJECT, NO_VALUE_FROM_FLAG, MESSAGE_PATH_TO_DART_PROJECT)
 
@@ -176,6 +186,7 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 	if *iOSProjectRoot == NO_VALUE_FROM_FLAG &&
 		*dartProject == NO_VALUE_FROM_FLAG &&
 		*kotlinProject == NO_VALUE_FROM_FLAG &&
+		*kotlinMapProject == NO_VALUE_FROM_FLAG &&
 			*javaScriptProject == NO_VALUE_FROM_FLAG {
 		return nil, errors.New("Did not include path to an iOS, Kotlin map, JS, or Dart project folder.\n" +
 			"Ex: ./StringValue -a /Users/me/workspace/iOSAPP/iOSAPP")
@@ -213,6 +224,10 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 		//kotlin
 		translatingToKotlin: *kotlinProject != NO_VALUE_FROM_FLAG,
 		pathToKotlinFolder: *kotlinProject,
+
+		//kotlin
+		translatingToKotlinMap: *kotlinMapProject != NO_VALUE_FROM_FLAG,
+		pathToKotlinFolderMap: *kotlinMapProject,
 
 		//dart
 		translatingToDart: *dartProject != NO_VALUE_FROM_FLAG,
@@ -312,6 +327,10 @@ type StringCheeseConfig struct {
 	//kotlin
 	translatingToKotlin bool
 	pathToKotlinFolder string
+
+	//kotlin
+	translatingToKotlinMap bool
+	pathToKotlinFolderMap string
 
 	//dart
 	translatingToDart bool

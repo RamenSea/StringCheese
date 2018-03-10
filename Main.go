@@ -36,6 +36,19 @@ func RunStringCheese(config *StringCheeseConfig) error {
 
 	if config.translatingToKotlin {
 		fmt.Println("Starting Kotlin translation")
+		err = translateStringsToKotlin(config)
+		if err == nil {
+			fmt.Println("Success")
+			fmt.Println("Make sure to add all generated files to your Kotlin project")
+		} else {
+			fmt.Println("String cheese failed")
+			fmt.Println("Error: ")
+			return err
+		}
+	}
+
+	if config.translatingToKotlinMap {
+		fmt.Println("Starting Kotlin Map translation")
 		err = translateStringsToKotlinMap(config)
 		if err == nil {
 			fmt.Println("Success")

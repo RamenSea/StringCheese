@@ -9,7 +9,7 @@ import (
 	Writes the KotlinMap StringCheese api for a given StringKey struct
  */
 func writeKotlinMapFiles(rootValue *StringKeys, values []*StringKeys, config *StringCheeseConfig) error {
-	pathToKotlinFile := config.pathToKotlinFolder + getKotlinMapFileName(config)
+	pathToKotlinFile := config.pathToKotlinFolderMap + getKotlinMapFileName(config)
 
 	_ = os.Remove(pathToKotlinFile) //ignore error
 	//if err != nil {
