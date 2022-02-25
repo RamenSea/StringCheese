@@ -4,9 +4,9 @@ import (
 	"errors"
 	"flag"
 	"os"
+	"sort"
 	"strings"
 	"time"
-	"sort"
 )
 
 /*
@@ -33,7 +33,7 @@ const MESSAGE_ANDROID_RES = "REQUIRED (if no -s)\n" +
 
 const CONFIG_ARG_NAME_OF_STRING_XML_FILE = "s_xml" //Optional
 const MESSAGE_NAME_OF_STRING_XML_FILE = "Optional\n" +
-	"        Name of your xml file containing strings.\n"
+							"        Name of your xml file containing strings.\n"
 const DEFAULT_VALUE_NAME_OF_STRING_XML_FILE = "strings" //.xml
 
 const CONFIG_ARG_ROOT_LANGUAGE = "lang" //Optional
@@ -67,15 +67,14 @@ const DEFAULT_VALUE_NAME_OF_XCODE_DOT_STRING_FILE = "String"
 
 const CONFIG_ARG_SHOULD_CREATE_SWIFT_KEYS = "swift" //Optional
 const MESSAGE_SHOULD_CREATE_SWIFT_KEYS = "Optional\n" +
-	"        If a swift key file should be generated.\n"
+							"        If a swift key file should be generated.\n"
 const DEFAULT_VALUE_SHOULD_CREATE_SWIFT_KEYS = true //this is relative to XCODE_PROJECT
 
 const CONFIG_ARG_PATH_TO_SWIFT_FILE = "swiftLoc" //Optional
 const MESSAGE_PATH_TO_SWIFT_FILE = "Optional\n" +
 	"        Relative path inside the XCode project where the Swift StringCheese key class will be generated.\n" +
-		"        If empty, this will generate it at the root of the project.\n"
+						"        If empty, this will generate it at the root of the project.\n"
 const DEFAULT_VALUE_PATH_TO_SWIFT_FILE = "" //this is relative to XCODE_PROJECT
-
 
 //Kotlin Map related
 const CONFIG_ARG_PATH_TO_KOTLIN_PROJECT = "kt" //Optional
@@ -83,26 +82,22 @@ const MESSAGE_PATH_TO_KOTLIN_PROJECT = "Optional, REQUIRED to output to a Kotlin
 	"        Where the kotlin class will be generated\n" +
 	"        For now it will always be apart of the org.stringcheese package\n"
 
-
 //Kotlin Map related
 const CONFIG_ARG_PATH_TO_KOTLIN_MAP_PROJECT = "km" //Optional
 const MESSAGE_PATH_TO_KOTLIN_MAP_PROJECT = "Optional, REQUIRED to output to a Kotlin Map<String, String> \n" +
 	"        Where the kotlin map class will be generated\n" +
 	"        For now it will always be apart of the org.stringcheese package\n"
 
-
 //Dart related
 const CONFIG_ARG_PATH_TO_DART_PROJECT = "dart" //Optional
 const MESSAGE_PATH_TO_DART_PROJECT = "Optional, REQUIRED to output to Dart\n" +
 	"        Root folder of your Dart project. This is where the Dart StringCheese classes will be generated\n"
-
 
 //Javascript related
 const CONFIG_ARG_PATH_TO_JS_PROJECT = "js" //Optional
 const MESSAGE_PATH_TO_JS_PROJECT = "Optional, REQUIRED to output to JavaScript\n" +
 	"        Where the JavaScript files will be generated.\n" +
 	"        Generates ES6 compatible JS.\n"
-
 
 //general
 const CONFIG_ARG_LOG_MISSING_STRINGS = "logMissing" //Optional
@@ -135,6 +130,10 @@ const MESSAGE_CLASS_NAME = "Optional\n" +
 	"        The name of the Class that will be generated\n"
 const DEFAULT_VALUE_CLASS_NAME = "StringCheese"
 
+const CONFIG_ARG_OBJ_C_SUPPORT = "objCSupport" //Optional
+const MESSAGE_OBJ_C_SUPPORT = "Optional\n" +
+	"        Enables the Swift key class and methods to be compatible with ObjC\n"
+const DEFAULT_VALUE_OBJ_C_SUPPORT = false
 
 const NO_VALUE_FROM_FLAG = "NONE"
 
@@ -155,6 +154,7 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 	createSwiftKey := flag.Bool(CONFIG_ARG_SHOULD_CREATE_SWIFT_KEYS, DEFAULT_VALUE_SHOULD_CREATE_SWIFT_KEYS, MESSAGE_SHOULD_CREATE_SWIFT_KEYS)
 	pathToSwift := flag.String(CONFIG_ARG_PATH_TO_SWIFT_FILE, DEFAULT_VALUE_PATH_TO_SWIFT_FILE, MESSAGE_PATH_TO_SWIFT_FILE)
 	className := flag.String(CONFIG_ARG_CLASS_NAME, DEFAULT_VALUE_CLASS_NAME, MESSAGE_CLASS_NAME)
+	objCSupport := flag.Bool(CONFIG_ARG_OBJ_C_SUPPORT, DEFAULT_VALUE_OBJ_C_SUPPORT, MESSAGE_OBJ_C_SUPPORT)
 
 	//kotlin
 	kotlinProject := flag.String(CONFIG_ARG_PATH_TO_KOTLIN_PROJECT, NO_VALUE_FROM_FLAG, CONFIG_ARG_PATH_TO_KOTLIN_PROJECT)
@@ -179,7 +179,7 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 
 	flag.Parse()
 
-	if *pathToAndroidRes == NO_VALUE_FROM_FLAG  && *pathSpreadSheet == NO_VALUE_FROM_FLAG {
+	if *pathToAndroidRes == NO_VALUE_FROM_FLAG && *pathSpreadSheet == NO_VALUE_FROM_FLAG {
 		return nil, errors.New("Did not include path to either your android res folder or folder of spread sheets.\n" +
 			"Ex: ./StringValue -a /Users/me/workspace/androidApp/app/src/main/res")
 	}
@@ -187,7 +187,7 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 		*dartProject == NO_VALUE_FROM_FLAG &&
 		*kotlinProject == NO_VALUE_FROM_FLAG &&
 		*kotlinMapProject == NO_VALUE_FROM_FLAG &&
-			*javaScriptProject == NO_VALUE_FROM_FLAG {
+		*javaScriptProject == NO_VALUE_FROM_FLAG {
 		return nil, errors.New("Did not include path to an iOS, Kotlin map, JS, or Dart project folder.\n" +
 			"Ex: ./StringValue -a /Users/me/workspace/iOSAPP/iOSAPP")
 	}
@@ -202,47 +202,48 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 
 	timeStamp := "// Last generated at: " + time.Now().UTC().String() + "\n"
 	config := StringCheeseConfig{
-		timeStampString: timeStamp,
-		rootLanguageId: *rootLanguage,
+		timeStampString:     timeStamp,
+		rootLanguageId:      *rootLanguage,
 		rootLanguageIdToUse: *usingRootLanguageId,
 
 		//spreadsheet
-		pathToSpreadSheetFolder: *pathSpreadSheet,
+		pathToSpreadSheetFolder:        *pathSpreadSheet,
 		shouldUseSpreadSheetForStrings: *pathSpreadSheet != NO_VALUE_FROM_FLAG,
 
 		//android
-		pathToAndroidRes: *pathToAndroidRes,
+		pathToAndroidRes:    *pathToAndroidRes,
 		nameOfXMLStringFile: *nameOfXMLFile,
 
 		//ios
-		translatingToIOS: *iOSProjectRoot != NO_VALUE_FROM_FLAG,
-		pathToIOSProject: *iOSProjectRoot,
-		nameOfDotStringFile: *nameOfDotStrings,
+		translatingToIOS:     *iOSProjectRoot != NO_VALUE_FROM_FLAG,
+		pathToIOSProject:     *iOSProjectRoot,
+		nameOfDotStringFile:  *nameOfDotStrings,
 		shouldCreateSwiftKey: *createSwiftKey,
-		pathToSwiftKey: *pathToSwift,
+		pathToSwiftKey:       *pathToSwift,
+		objCSupport:          *objCSupport,
 
 		//kotlin
 		translatingToKotlin: *kotlinProject != NO_VALUE_FROM_FLAG,
-		pathToKotlinFolder: *kotlinProject,
+		pathToKotlinFolder:  *kotlinProject,
 
 		//kotlin
 		translatingToKotlinMap: *kotlinMapProject != NO_VALUE_FROM_FLAG,
-		pathToKotlinFolderMap: *kotlinMapProject,
+		pathToKotlinFolderMap:  *kotlinMapProject,
 
 		//dart
 		translatingToDart: *dartProject != NO_VALUE_FROM_FLAG,
-		pathToDartFile: *dartProject,
+		pathToDartFile:    *dartProject,
 
 		//JS
 		translatingToJS: *javaScriptProject != NO_VALUE_FROM_FLAG,
-		pathToJSFolder: *javaScriptProject,
+		pathToJSFolder:  *javaScriptProject,
 
 		//general
-		className: *className,
-		logMissingStrings: *logMissingStrings,
-		reduceKeys: *reduceKeys,
-		shouldCreateArguments: *keyClassesHaveArgs,
-		createStaticKeyClass: *staticClassKey,
+		className:               *className,
+		logMissingStrings:       *logMissingStrings,
+		reduceKeys:              *reduceKeys,
+		shouldCreateArguments:   *keyClassesHaveArgs,
+		createStaticKeyClass:    *staticClassKey,
 		skipNonValidLanguageIds: *skipNonValidLanguageIds,
 	}
 
@@ -256,6 +257,7 @@ func (config *StringCheeseConfig) dotStringFileWithLanguageId(languageId string)
 	}
 	return config.pathToIOSProject + "/" + strings.Title(languageId) + ".lproj/" + config.nameOfDotStringFile + ".strings"
 }
+
 //gets all the language IDs for a translation
 func (config *StringCheeseConfig) getAllValueFoldersLanguageIds() ([]string, error) {
 	languageIds := []string{}
@@ -305,46 +307,47 @@ func (config *StringCheeseConfig) getAllValueFoldersLanguageIds() ([]string, err
 */
 type StringCheeseConfig struct {
 	//base
-	timeStampString string
-	rootLanguageId string
+	timeStampString     string
+	rootLanguageId      string
 	rootLanguageIdToUse string
 
 	//spreadsheets
-	pathToSpreadSheetFolder string
+	pathToSpreadSheetFolder        string
 	shouldUseSpreadSheetForStrings bool
 
 	//android
-	pathToAndroidRes string
+	pathToAndroidRes    string
 	nameOfXMLStringFile string
 
 	//ios
-	translatingToIOS bool
-	pathToIOSProject string
-	nameOfDotStringFile string
+	translatingToIOS     bool
+	pathToIOSProject     string
+	nameOfDotStringFile  string
 	shouldCreateSwiftKey bool
-	pathToSwiftKey string
+	pathToSwiftKey       string
+	objCSupport          bool
 
 	//kotlin
 	translatingToKotlin bool
-	pathToKotlinFolder string
+	pathToKotlinFolder  string
 
 	//kotlin
 	translatingToKotlinMap bool
-	pathToKotlinFolderMap string
+	pathToKotlinFolderMap  string
 
 	//dart
 	translatingToDart bool
-	pathToDartFile string
+	pathToDartFile    string
 
 	//dart
 	translatingToJS bool
-	pathToJSFolder string
+	pathToJSFolder  string
 
 	//general
-	className string
-	shouldCreateArguments bool
-	createStaticKeyClass bool
-	reduceKeys bool
-	logMissingStrings bool
+	className               string
+	shouldCreateArguments   bool
+	createStaticKeyClass    bool
+	reduceKeys              bool
+	logMissingStrings       bool
 	skipNonValidLanguageIds bool
 }

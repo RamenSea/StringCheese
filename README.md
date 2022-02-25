@@ -75,8 +75,9 @@ Arguments for generating the translations
 
 iOS specific arguments
 
-| Arg | Type    | Description  | Defaults |
-| -------------- | ---------- | ------------ | ----------- |
-| dotName   | string | Name of the .strings file.  | String |
-| swift   | boolean | If a swift key file should be generated.  | true |
-| swiftLoc | string | Relative path inside the XCode project where the Swift StringCheese key class will be generated. If empty, this will generate it at the root of the project. | none |
+| Arg      | Type    | Description                                                                                                                                                  | Defaults |
+|----------| ---------- |--------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| dotName  | string | Name of the .strings file.                                                                                                                                   | String   |
+| swift    | boolean | If a swift key file should be generated.                                                                                                                     | true     |
+| swiftLoc | string | Relative path inside the XCode project where the Swift StringCheese key class will be generated. If empty, this will generate it at the root of the project. | none     |
+| objCSupport     | boolean | Whether or not the exported Swift class and properties will be accessible from ObjC                                                                           | false    |
