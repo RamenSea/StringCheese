@@ -55,7 +55,7 @@ func writeSwiftKeyFile(value *StringKeys, config *StringCheeseConfig) error {
 	file.WriteString("	private func localize(_ key: String) -> String { \n" +
 		"		return NSLocalizedString(key, comment: \"\")\n" +
 		"	}\n")
-	valueMap := value.strings
+	values := value.getSortedValues()
 
 	writeArgSwiftFuncs := config.shouldCreateArguments
 
@@ -63,14 +63,14 @@ func writeSwiftKeyFile(value *StringKeys, config *StringCheeseConfig) error {
 	if config.objCSupport {
 		objCStringTag = "@objc "
 	}
-	for _, value := range valueMap {
+	for _, value := range values {
 		if value.translatable == false {
 			file.WriteString("	" + objCStringTag + "let " + swiftTransformKeyToSwiftVarName(value.originalKey) + ": String = " +
 				"\"" + value.value + "\"\n")
 		} else if writeArgSwiftFuncs && value.numberOfArguments > 0 {
 			//I added the raw string just incase
 			file.WriteString("	" + objCStringTag + "var raw_" + swiftTransformKeyToSwiftVarName(value.originalKey) + ": String {\n" +
-				"		return localize(\"" + value.key + "\")\n" +
+				"		localize(\"" + value.key + "\")\n" +
 				"	}\n")
 
 			file.WriteString("	" + objCStringTag + "func " + swiftTransformKeyToSwiftVarName(value.originalKey) + "(" +
@@ -81,7 +81,7 @@ func writeSwiftKeyFile(value *StringKeys, config *StringCheeseConfig) error {
 
 		} else {
 			file.WriteString("	" + objCStringTag + "var " + swiftTransformKeyToSwiftVarName(value.originalKey) + ": String {\n" +
-				"		return localize(\"" + value.key + "\")\n" +
+				"		localize(\"" + value.key + "\")\n" +
 				"	}\n")
 		}
 	}

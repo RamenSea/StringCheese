@@ -10,7 +10,7 @@ import (
 	3. Clean this up and look for missing keys
 	4. Reduce if set
 	5. Generate Dart file
- */
+*/
 func translateAndroidStringsToDart(config *StringCheeseConfig) error {
 
 	//	1. Get root string file
@@ -26,7 +26,7 @@ func translateAndroidStringsToDart(config *StringCheeseConfig) error {
 		//exit
 	}
 	stringValues := []*StringKeys{}
-	for _,id := range ids {
+	for _, id := range ids {
 		sv, err := getStringKeys(id, config, dartPlatformStringValueProcessor)
 		if err != nil {
 			return err
@@ -40,13 +40,12 @@ func translateAndroidStringsToDart(config *StringCheeseConfig) error {
 
 	//adds missing strings keys to root value
 	for _, value := range stringValues {
-		rootStringValue.compareAndAddValues(false, value, config)
+		rootStringValue.compareAndAddValues(false, false, value, config)
 	}
 	//adds missing string keys to all of the string values from root value
 	for _, value := range stringValues {
-		value.compareAndAddValues(true, rootStringValue, config)
+		value.compareAndAddValues(true, true, rootStringValue, config)
 	}
-
 
 	//4. Reduce if set
 	//reduce keys if option is set

@@ -47,17 +47,29 @@ This key class will also provide helper functions to create formatted strings.
 3. Create a StringCheese config struct `StringCheeseConfig`
 4. Run the `RunStringCheese` function
 
+### CSV structure
+
+CSV must be structured like
+
+| Key         | LANGUAGE ID                  | Translatable | Argument names     |
+|-------------|------------------------------|--------------|--------------------|
+| someKey     | some text                    | NO           |                    |
+| another.Key | more text                    | YES          |                    |
+| another.Key | text with args %1$s and %2$s | YES          | argName1, argName2 |
+
 ### Argument Bucket List
 
 `./StringCheese -h` for similar information
 
-Arguments for pointing to projects. Pointing to an Android project is required.
+Arguments for pointing to projects. Pointing to an Android project or CSV file is required.
 
-| Arg | Type    | Description  |
-| -------------- | ---------- | ------------ |
-| a   | string | Path to your Android res folder.  |
-| i   | string | Root folder of your iOS project. This is where the .strings files will be created.  |
-| dart | string | This is where the Dart StringCheese classes will be generated  | 
+| Arg | Type   | Description                                                                                                                                        |
+|-----|--------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| a   | string | Path to your Android res folder.                                                                                                                   |
+| s   | string | Path to your CSV file or folder.                                                                                                                   |
+| csvLangNum    | int    | Set this if translated text exists in one CSV rather than a separate CSV for each language. Set this to the number of languages in your CSV file. Ex: Your CSV includes `en`, `fr`, and `es`, the value should be 3 |
+| i   | string | Root folder of your iOS project. This is where the .strings files will be created.                                                                 |
+| dart | string | This is where the Dart StringCheese classes will be generated                                                                                      | 
 
 Arguments for generating the translations
 

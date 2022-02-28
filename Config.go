@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/csv"
 	"errors"
 	"flag"
+	"fmt"
 	"os"
 	"sort"
 	"strings"
@@ -22,8 +24,18 @@ const LANGUAGE_ID_NONE_NAME = "en"
 //Base translation files
 const CONFIG_ARG_SPREAD_SHEET_PATH = "s"
 const MESSAGE_SPREAD_SHEET_PATH = "REQUIRED (if no -a)\n" +
-	"        Path to your spread sheet folder.\n" +
-	"        Ex: /Users/me/workspace/project/translation/spreadsheets/\n"
+	"        If `csvLangs` is set, path to your CSV file.\n" +
+	"        Otherwise, path to your spread sheet folder.\n" +
+	"        Ex: /Users/me/workspace/project/translation/spreadsheets/\n" +
+	"        Ex: /Users/me/workspace/project/translation/spreadsheets/base.csv\n"
+
+const CONFIG_ARG_SPREAD_SHEET_NUMBER_OF_LANGUAGES = "csvLangNum"
+const DEFAULT_VALUE_SPREAD_SHEET_NUMBER_OF_LANGUAGES = -1
+const MESSAGE_SPREAD_SHEET_NUMBER_OF_LANGUAGES = "Optional\n" +
+	"        Set this if translated text exists in one CSV rather than a separate CSV for each language\n" +
+	"        Set this to the number of languages in your CSV file\n" +
+	"        Value must be higher than 0\n" +
+	"        Ex: Your CSV includes `en`, `fr`, and `es`, the value should be 3\n"
 
 //Android related
 const CONFIG_ARG_ANDROID_RES = "a" //REQUIRED
@@ -144,7 +156,7 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 
 	//android related
 	pathSpreadSheet := flag.String(CONFIG_ARG_SPREAD_SHEET_PATH, NO_VALUE_FROM_FLAG, MESSAGE_SPREAD_SHEET_PATH)
-
+	spreadSheetNumberOfLanguages := flag.Int(CONFIG_ARG_SPREAD_SHEET_NUMBER_OF_LANGUAGES, DEFAULT_VALUE_SPREAD_SHEET_NUMBER_OF_LANGUAGES, MESSAGE_SPREAD_SHEET_NUMBER_OF_LANGUAGES)
 	pathToAndroidRes := flag.String(CONFIG_ARG_ANDROID_RES, NO_VALUE_FROM_FLAG, MESSAGE_ANDROID_RES)
 	nameOfXMLFile := flag.String(CONFIG_ARG_NAME_OF_STRING_XML_FILE, DEFAULT_VALUE_NAME_OF_STRING_XML_FILE, MESSAGE_NAME_OF_STRING_XML_FILE)
 
@@ -181,7 +193,7 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 
 	if *pathToAndroidRes == NO_VALUE_FROM_FLAG && *pathSpreadSheet == NO_VALUE_FROM_FLAG {
 		return nil, errors.New("Did not include path to either your android res folder or folder of spread sheets.\n" +
-			"Ex: ./StringValue -a /Users/me/workspace/androidApp/app/src/main/res")
+			"Ex: ./StringCheese -a /Users/me/workspace/androidApp/app/src/main/res")
 	}
 	if *iOSProjectRoot == NO_VALUE_FROM_FLAG &&
 		*dartProject == NO_VALUE_FROM_FLAG &&
@@ -189,7 +201,7 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 		*kotlinMapProject == NO_VALUE_FROM_FLAG &&
 		*javaScriptProject == NO_VALUE_FROM_FLAG {
 		return nil, errors.New("Did not include path to an iOS, Kotlin map, JS, or Dart project folder.\n" +
-			"Ex: ./StringValue -a /Users/me/workspace/iOSAPP/iOSAPP")
+			"Ex: ./StringCheese -a /Users/me/workspace/iOSAPP/iOSAPP")
 	}
 
 	var usingRootLanguageId = rootLanguageIfIfNone
@@ -209,6 +221,8 @@ func parseAndGetConfig() (*StringCheeseConfig, error) {
 		//spreadsheet
 		pathToSpreadSheetFolder:        *pathSpreadSheet,
 		shouldUseSpreadSheetForStrings: *pathSpreadSheet != NO_VALUE_FROM_FLAG,
+		spreadSheetValuesAllInOneSheet: *spreadSheetNumberOfLanguages >= 1,
+		spreadSheetNumberOfLanguages:   *spreadSheetNumberOfLanguages,
 
 		//android
 		pathToAndroidRes:    *pathToAndroidRes,
@@ -258,10 +272,42 @@ func (config *StringCheeseConfig) dotStringFileWithLanguageId(languageId string)
 	return config.pathToIOSProject + "/" + strings.Title(languageId) + ".lproj/" + config.nameOfDotStringFile + ".strings"
 }
 
+func GetLanguageIdsFromCSVHeader(config *StringCheeseConfig) ([]string, error) {
+	fileReader, err := os.Open(config.pathToSpreadSheetFolder)
+	if err != nil {
+		return nil, err
+	}
+	var reader = csv.NewReader(fileReader)
+	line, err := reader.Read()
+
+	if err != nil {
+		return nil, err
+	} else if len(line) <= config.spreadSheetNumberOfLanguages {
+		return nil, errors.New("CSV is smaller than the expected")
+	}
+
+	languageIds := []string{}
+	for i := CSV_POSITION_VALUE; i < config.spreadSheetNumberOfLanguages+1; i++ {
+		langId := strings.ToLower(line[i])
+		if CheckIfValidLanguageCode(langId) || !config.skipNonValidLanguageIds {
+			languageIds = append(languageIds, langId)
+		}
+	}
+
+	return languageIds, nil
+}
+
 //gets all the language IDs for a translation
 func (config *StringCheeseConfig) getAllValueFoldersLanguageIds() ([]string, error) {
-	languageIds := []string{}
-	if config.shouldUseSpreadSheetForStrings {
+	var languageIds []string
+	if config.spreadSheetValuesAllInOneSheet {
+		idsFromCSV, err := GetLanguageIdsFromCSVHeader(config)
+		if err != nil {
+			return nil, err
+		}
+		languageIds = idsFromCSV
+	} else if config.shouldUseSpreadSheetForStrings {
+		languageIds = []string{}
 		res, err := os.Open(config.pathToSpreadSheetFolder)
 		if err != nil {
 			return nil, err
@@ -280,6 +326,7 @@ func (config *StringCheeseConfig) getAllValueFoldersLanguageIds() ([]string, err
 			}
 		}
 	} else {
+		languageIds = []string{}
 		res, err := os.Open(config.pathToAndroidRes)
 		if err != nil {
 			return nil, err
@@ -299,6 +346,7 @@ func (config *StringCheeseConfig) getAllValueFoldersLanguageIds() ([]string, err
 		}
 	}
 	sort.Strings(languageIds)
+	fmt.Println("Exporting: ", strings.Join(languageIds, ", "))
 	return languageIds, nil
 }
 
@@ -314,6 +362,8 @@ type StringCheeseConfig struct {
 	//spreadsheets
 	pathToSpreadSheetFolder        string
 	shouldUseSpreadSheetForStrings bool
+	spreadSheetValuesAllInOneSheet bool
+	spreadSheetNumberOfLanguages   int
 
 	//android
 	pathToAndroidRes    string

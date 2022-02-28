@@ -18,12 +18,11 @@ func writeStringValueToDotStrings(value *StringKeys, config *StringCheeseConfig)
 	if err != nil {
 		return err
 	}
-	valueMap := value.strings
 
 	file.WriteString(config.timeStampString)
-	for key, value := range valueMap {
+	for _, value := range value.getSortedValues() {
 		if value.translatable {
-			file.WriteString("\"" + key + "\"=\"" + value.value + "\";\n")
+			file.WriteString("\"" + value.key + "\"=\"" + value.value + "\";\n")
 		}
 	}
 	return file.Close()
@@ -33,7 +32,7 @@ func iOSPlatformStringValueProcessor(value string, argNames string, sv *StringVa
 	usingValue := value
 	//%1$s
 	reg, _ := regexp.Compile(`(%[0-9]*\$s)`)
-	numOfArg := reg.FindAllString(usingValue,-1)
+	numOfArg := reg.FindAllString(usingValue, -1)
 	arguments := len(numOfArg)
 	argumentString := ""
 	formatString := ""
@@ -41,7 +40,8 @@ func iOSPlatformStringValueProcessor(value string, argNames string, sv *StringVa
 		//find argument names here
 		i := 0
 		usingValue = reg.ReplaceAllStringFunc(usingValue, func(replaceString string) string {
-			return "%" + strconv.Itoa(i + 1) + "$@"
+			i = i + 1
+			return "%" + strconv.Itoa(i) + "$@"
 		})
 		var argNamesFromXML []string
 		if len(argNames) > 0 {
@@ -49,7 +49,7 @@ func iOSPlatformStringValueProcessor(value string, argNames string, sv *StringVa
 			argNamesFromXML = strings.Split(strippedArgString, ",")
 		}
 		for i := 0; i < arguments; i++ {
-			argName := "arg" + strconv.Itoa(i + 1)
+			argName := "arg" + strconv.Itoa(i+1)
 			formatName := argName
 			if i < len(argNamesFromXML) {
 				argName = argNamesFromXML[i]
@@ -58,7 +58,7 @@ func iOSPlatformStringValueProcessor(value string, argNames string, sv *StringVa
 				argName = "_ " + argName
 			}
 
-			if i + 1 < arguments {
+			if i+1 < arguments {
 				argName = argName + ": String, "
 				formatName = formatName + ", "
 			} else {

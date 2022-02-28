@@ -7,7 +7,7 @@ import "errors"
 	2. Get the rest of the string files
 	3. Clean this up and look for missing keys
 	4. Generate JavaScript file
- */
+*/
 func translateStringsToJavaScript(config *StringCheeseConfig) error {
 
 	//	1. Get root string file
@@ -24,7 +24,7 @@ func translateStringsToJavaScript(config *StringCheeseConfig) error {
 	}
 
 	stringValues := []*StringKeys{}
-	for _,id := range ids {
+	for _, id := range ids {
 		sv, err := getStringKeys(id, config, jsPlatformStringValueProcessor)
 		if err != nil {
 			return err
@@ -38,13 +38,12 @@ func translateStringsToJavaScript(config *StringCheeseConfig) error {
 
 	//adds missing strings keys to root value
 	for _, value := range stringValues {
-		rootStringValue.compareAndAddValues(false, value, config)
+		rootStringValue.compareAndAddValues(false, false, value, config)
 	}
 	//adds missing string keys to all of the string values from root value
 	for _, value := range stringValues {
-		value.compareAndAddValues(true, rootStringValue, config)
+		value.compareAndAddValues(true, true, rootStringValue, config)
 	}
-
 
 	//4. Generate JavaScript file
 	return writeJSFiles(rootStringValue, stringValues, config)

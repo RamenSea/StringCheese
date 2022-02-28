@@ -1,9 +1,5 @@
 package main
 
-import (
-	"errors"
-)
-
 /*
 	1. Get root string file
 	2. Get the rest of the string files
@@ -11,12 +7,12 @@ import (
 	4. Generate Swift file if needed
 	5. Reduce keys if need, but only if a Swift file is needed
 	6. Generate .strings files
- */
+*/
 func translateAndroidStringsToIOS(config *StringCheeseConfig) error {
 	//	1. Get root string file
 	rootStringValue, err := getStringKeys(config.rootLanguageId, config, iOSPlatformStringValueProcessor)
-	if rootStringValue == nil {
-		return errors.New("Error loading the root string value")
+	if err != nil {
+		return err
 		//exit
 	}
 	//2. Get the rest of the string files
@@ -26,7 +22,7 @@ func translateAndroidStringsToIOS(config *StringCheeseConfig) error {
 		//exit
 	}
 	stringValues := []*StringKeys{}
-	for _,id := range ids {
+	for _, id := range ids {
 		sv, err := getStringKeys(id, config, iOSPlatformStringValueProcessor)
 		if err != nil {
 			return err
@@ -40,17 +36,17 @@ func translateAndroidStringsToIOS(config *StringCheeseConfig) error {
 
 	//adds missing strings keys to root value
 	for _, value := range stringValues {
-		rootStringValue.compareAndAddValues(false, value, config)
+		rootStringValue.compareAndAddValues(false, false, value, config)
 	}
 	//adds missing string keys to all of the string values from root value
 	for _, value := range stringValues {
-		value.compareAndAddValues(true, rootStringValue, config)
+		value.compareAndAddValues(true, true, rootStringValue, config)
 	}
 
 	//	4. Generate Swift file if needed
 	if config.shouldCreateSwiftKey {
 		//	5. Reduce keys if need, but only if a Swift file is needed
-		if config.reduceKeys{
+		if config.reduceKeys {
 			rootStringValue.reduceKeys()
 			for _, value := range stringValues {
 				value.copyKeys(rootStringValue)
@@ -64,8 +60,8 @@ func translateAndroidStringsToIOS(config *StringCheeseConfig) error {
 	if err != nil {
 		return err
 	}
-	for _,value := range stringValues {
-		err = writeStringValueToDotStrings(value,config)
+	for _, value := range stringValues {
+		err = writeStringValueToDotStrings(value, config)
 		if err != nil {
 			return err
 		}
